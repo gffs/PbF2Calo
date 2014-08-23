@@ -2,7 +2,7 @@
 #include "G4UImanager.hh"
 #include "Randomize.hh"
 
-#include "DetectorConstruction.hh"
+#include "DetectorConstruction.h"
 #include "PhysicsList.h"
 #include "ActionInitialization.h"
 

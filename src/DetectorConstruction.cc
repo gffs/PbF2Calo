@@ -1,9 +1,10 @@
-#include "DetectorConstruction.hh"
+#include "DetectorConstruction.h"
 
 #include "G4NistManager.hh"
 
 #include "G4Material.hh"
-#include "G4Box.hh"
+#include "UBox.hh"
+#include "G4Usolid.hh"
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
 
@@ -60,8 +61,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4LogicalVolumeStore::GetInstance()->Clean();
     G4SolidStore::GetInstance()->Clean();
 
-    G4Box* sBox = new G4Box("crystal", fBoxSize, fBoxSize, fBoxSize);
-    fLBox = new G4LogicalVolume(sBox, mPbF2, mPbF2->GetName());
+    UBox* sBox = new UBox("crystal", fBoxSize, fBoxSize, fBoxSize);
+    G4USolid* gsBox = new G4USolid("crystal", sBox);
+    fLBox = new G4LogicalVolume(gsBox, mPbF2, mPbF2->GetName());
     fPBox = new G4PVPlacement(0, G4ThreeVector(), fLBox, mPbF2->GetName(), 0, false, 0);
     return fPBox;
 }

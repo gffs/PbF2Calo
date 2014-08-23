@@ -24,8 +24,6 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 file(GLOB headers_src ${PROJECT_SOURCE_DIR}/src/*.h)
 list(APPEND headers ${headers_src})
 
-message(STATUS ${headers})
-
 add_executable(PbF2Calo PbF2Calo.cc ${sources} ${headers})
 target_link_libraries(PbF2Calo ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
 
