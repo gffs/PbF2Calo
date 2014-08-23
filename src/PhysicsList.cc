@@ -30,7 +30,7 @@ PhysicsList::PhysicsList() :
     G4String stateOff("off");
     emExtraPhysicsList->Synch(stateOff);
     emExtraPhysicsList->GammaNuclear(stateOn);
-    emExtraPhysicsList->MuonNuclear(stateOff);
+    emExtraPhysicsList->MuonNuclear(stateOn);
 
     SetVerboseLevel(1);
 

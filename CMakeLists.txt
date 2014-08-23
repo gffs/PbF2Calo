@@ -13,7 +13,7 @@ endif()
 find_package(ROOT REQUIRED)
 
 include(${Geant4_USE_FILE})
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -arch x86_64 -std=c++1y -Wunreachable-code -pedantic -Wno-c++98-compat -Wno-shadow -Wno-deprecated-register -g -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -arch x86_64 -std=c++1y -Wextra -Wno-shadow -g -O3")
 
 include_directories(${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src)
 include_directories(${Geant4_INCLUDE_DIR})
