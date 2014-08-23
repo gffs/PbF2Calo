@@ -19,25 +19,27 @@
 
 DetectorConstruction::DetectorConstruction() :
     G4VUserDetectorConstruction(),
-    fPBox(0),
-    fLBox(0),
-    mPbF2(0),
-    fBoxSize(50*cm)
+    crystalLength(140 * mm)
 {
 }
 
 DetectorConstruction::~DetectorConstruction()
 {
+    delete physWorld;
+    delete logicWorld;
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {
     G4NistManager* nistManager = G4NistManager::Instance();
 
+    G4Material* mAir = nistManager->FindOrBuildMaterial("G4_AIR");
     G4Material* mPb = nistManager->FindOrBuildMaterial("G4_Pb");
     G4Material* mF = nistManager->FindOrBuildMaterial("G4_F");
+    G4Material* mAl = nistManager->FindOrBuildMaterial("G4_Al");
+    G4Material* mSi = nistManager->FindOrBuildMaterial("G4_Si");
 
-    mPbF2 = new G4Material("PbF2", 7.77*g/cm3, 2);
+    G4Material* mPbF2 = new G4Material("PbF2", 7.77*g/cm3, 2);
     mPbF2->AddMaterial(mPb, 0.84504);
     mPbF2->AddMaterial(mF, 0.15496);
 
@@ -49,22 +51,51 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
        w = 0.001240 * MeV / w;
     }
 
-    G4MaterialPropertiesTable* table = new G4MaterialPropertiesTable() ;
-    table->AddProperty("RINDEX", wavelength, refractiveIndex, sizeof(wavelength) / sizeof(wavelength[0]));
+    G4MaterialPropertiesTable* table = new G4MaterialPropertiesTable();
+    table->AddProperty("RINDEX", wavelength, refractiveIndex,
+            sizeof(wavelength) / sizeof(wavelength[0]));
     mPbF2->SetMaterialPropertiesTable(table);
-
-    G4cout << G4endl << "The materials defined are : " << G4endl << G4endl;
-    G4cout << *(G4Material::GetMaterialTable()) << G4endl;
 
     G4GeometryManager::GetInstance()->OpenGeometry();
     G4PhysicalVolumeStore::GetInstance()->Clean();
     G4LogicalVolumeStore::GetInstance()->Clean();
     G4SolidStore::GetInstance()->Clean();
 
-    UBox* sBox = new UBox("crystal", fBoxSize, fBoxSize, fBoxSize);
-    G4USolid* gsBox = new G4USolid("crystal", sBox);
-    fLBox = new G4LogicalVolume(gsBox, mPbF2, mPbF2->GetName());
-    fPBox = new G4PVPlacement(0, G4ThreeVector(), fLBox, mPbF2->GetName(), 0, false, 0);
-    return fPBox;
+    const float caloHalfWidth = 250 * mm;
+    //world has to be centered at origin
+    UBox* solidWorld = new UBox("World", crystalLength + 3*mm,
+            caloHalfWidth, caloHalfWidth);
+    logicWorld = new G4LogicalVolume(
+            new G4USolid(solidWorld->GetName(), solidWorld),
+            mAir, solidWorld->GetName());
+    physWorld = new G4PVPlacement(0, //no rotation
+            G4ThreeVector(0, 0, 0), //world has to be centered at origin
+            logicWorld, logicWorld->GetName(), 0, false, 0, true);
+
+    UBox* solidAlPlate = new UBox("AlPlate", 1.5 * mm,
+            caloHalfWidth, caloHalfWidth);
+    G4LogicalVolume* logicAlPlate = new G4LogicalVolume(
+            new G4USolid(solidAlPlate->GetName(), solidAlPlate),
+            mAl, solidAlPlate->GetName());
+    new G4PVPlacement(0, G4ThreeVector(-1.5 * mm, 0, 0),
+            logicAlPlate, logicAlPlate->GetName(), logicWorld, false, 0, true);
+
+    UBox* solidSiPlate = new UBox("SiPlate", 1.5 * mm,
+            caloHalfWidth, caloHalfWidth);
+    G4LogicalVolume* logicSiPlate = new G4LogicalVolume(
+            new G4USolid(solidSiPlate->GetName(), solidSiPlate),
+            mSi, solidSiPlate->GetName());
+    new G4PVPlacement(0, G4ThreeVector(crystalLength + 1.5 * mm, 0, 0),
+            logicSiPlate, logicSiPlate->GetName(), logicWorld, false, 0, true);
+
+    UBox* solidPbF2 = new UBox("PbF2", crystalLength / 2.0,
+            caloHalfWidth, caloHalfWidth);
+    G4LogicalVolume* logicPbF2 = new G4LogicalVolume(
+            new G4USolid(solidPbF2->GetName(), solidPbF2),
+            mPbF2, solidPbF2->GetName());
+    new G4PVPlacement(0, G4ThreeVector(crystalLength / 2.0, 0, 0),
+            logicPbF2, logicPbF2->GetName(), logicWorld, false, 0, true);
+
+    return physWorld;
 }
 

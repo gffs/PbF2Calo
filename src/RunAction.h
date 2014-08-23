@@ -7,7 +7,6 @@
 #include "globals.hh"
 
 class G4Run;
-class G4Material;
 class TFile;
 class TTree;
 

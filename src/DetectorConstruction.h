@@ -13,13 +13,13 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     ~DetectorConstruction();
   
     virtual G4VPhysicalVolume* Construct();
-    const G4VPhysicalVolume* GetWorld() { return fPBox; };
+    const G4VPhysicalVolume* GetWorld() { return physWorld; }
 
   private:
-    G4VPhysicalVolume* fPBox;
-    G4LogicalVolume* fLBox;
-    G4Material* mPbF2;
-    G4double fBoxSize;
+
+    G4VPhysicalVolume* physWorld;
+    G4LogicalVolume* logicWorld;
+    G4double crystalLength;
 };
 
 
