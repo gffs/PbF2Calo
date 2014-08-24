@@ -16,6 +16,8 @@ struct energy_deposit {
     float pos_y;
     float pos_z;
     float time_g;
+    unsigned int ev_num;
+    char vol_nm[8];
 };
 
 struct photon_deposit {
@@ -37,7 +39,8 @@ class RunAction : public G4UserRunAction
     virtual void BeginOfRunAction(const G4Run*);
     virtual void EndOfRunAction(const G4Run*);
 
-    void FillEnergyDeposit(G4double eng, const G4ThreeVector& pos, G4double gtime) const;
+    void FillEnergyDeposit(G4double eng, const G4ThreeVector& pos,
+            G4double gtime, G4int evID, const G4String& physVol) const;
     void FillPhotonDeposit(const G4ThreeVector& pos, G4double gtime, const G4ThreeVector& mom) const;
     void FillRootTree() const;
 

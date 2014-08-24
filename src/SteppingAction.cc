@@ -4,6 +4,8 @@
 #include "G4RunManager.hh"
 #include "G4UserRunAction.hh"
 
+static const G4String outOfWorld("OutOfWorld");
+
 SteppingAction::SteppingAction():
     G4UserSteppingAction()
 {
@@ -23,8 +25,13 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
         G4StepPoint* endPoint = aStep->GetPostStepPoint();
         const G4ThreeVector pos = endPoint->GetPosition();
         G4double gtime = endPoint->GetGlobalTime();
-
-        ra->FillEnergyDeposit(edep, pos, gtime);
+        auto physVol = endPoint->GetPhysicalVolume();
+        G4int evID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
+        if (physVol) {
+            ra->FillEnergyDeposit(edep, pos, gtime, evID, physVol->GetName());
+        } else {
+            ra->FillEnergyDeposit(edep, pos, gtime, evID, outOfWorld);
+        }
     }
 }
 

@@ -1,3 +1,4 @@
+#include <cstring>
 #include <string>
 #include <mutex>
 
@@ -55,7 +56,8 @@ void RunAction::BeginOfRunAction(const G4Run*)
     root_file = new TFile(root_file_name.c_str(), "recreate");
 
     eng_tree = new TTree("eng", "eng");
-    eng_tree->Branch("eng_dep", &eng_dep->eng, "eng/F:pos_x:pos_y:pos_z:time_g", 1024*1024);
+    eng_tree->Branch("eng_dep", &eng_dep->eng,
+            "eng/F:pos_x:pos_y:pos_z:time_g:ev_num/i:vol_nm/C", 1024*1024);
     eng_tree->Fill();
     eng_tree->Reset();
 
@@ -79,15 +81,21 @@ void RunAction::EndOfRunAction(const G4Run*)
     delete pht_dep;
 }
 
-void RunAction::FillEnergyDeposit(G4double eng, const G4ThreeVector& pos, G4double gtime) const
+void RunAction::FillEnergyDeposit(G4double eng, const G4ThreeVector& pos,
+        G4double gtime, G4int evID, const G4String& physVol) const
 {
     struct energy_deposit ed{
         static_cast<float>(eng),
         static_cast<float>(pos.x()),
         static_cast<float>(pos.y()),
         static_cast<float>(pos.z()),
-        static_cast<float>(gtime)
+        static_cast<float>(gtime),
+        static_cast<unsigned int>(evID),
+        {}
     };
+
+    strncpy(ed.vol_nm, physVol.c_str(), 7);
+    ed.vol_nm[7] = '\0';
 
     eng_q->push(ed);
 }
