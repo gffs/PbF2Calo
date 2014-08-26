@@ -1,12 +1,16 @@
 #include "PhysicsList.h"
 #include "OpticalPhysics.h"
+#include "AlPlateModel.h"
 
+#include "G4DecayPhysics.hh"
 #include "G4EmPenelopePhysics.hh"
 #include "G4EmExtraPhysics.hh"
-#include "G4DecayPhysics.hh"
+#include "G4FastSimulationManagerProcess.hh"
 #include "G4HadronPhysicsQGSP_BIC_HP.hh"
-#include "G4OpticalProcessIndex.hh"
 #include "G4LossTableManager.hh"
+#include "G4OpticalProcessIndex.hh"
+#include "G4ProcessManager.hh"
+#include "G4RegionStore.hh"
 
 #include "G4Gamma.hh"
 #include "G4Electron.hh"
@@ -14,6 +18,9 @@
 
 #include "G4String.hh"
 #include "G4SystemOfUnits.hh"
+
+#include "G4GlobalFastSimulationManager.hh"
+#include "G4VFastSimulationModel.hh"
 
 PhysicsList::PhysicsList() :
     G4VModularPhysicsList(),
@@ -32,7 +39,7 @@ PhysicsList::PhysicsList() :
     emExtraPhysicsList->GammaNuclear(stateOn);
     emExtraPhysicsList->MuonNuclear(stateOn);
 
-    SetVerboseLevel(1);
+    SetVerboseLevel(0);
 
     G4LossTableManager::Instance();
 }
@@ -59,6 +66,7 @@ void PhysicsList::ConstructParticle()
 void PhysicsList::ConstructProcess()
 {
     AddTransportation();
+    AddParametrisation();
     decayPhysicsList->ConstructProcess();
     emPhysicsList->ConstructProcess();
     emExtraPhysicsList->ConstructProcess();
@@ -66,6 +74,20 @@ void PhysicsList::ConstructProcess()
     opticalPhysicsList->ConstructProcess();
 }
 
+void PhysicsList::AddParametrisation()
+{
+    G4RegionStore* rs = G4RegionStore::GetInstance();
+    G4Region* alPlate = rs->GetRegion("AlPlate");
+    new AlPlateModel("AlPlate", alPlate);
+
+    G4FastSimulationManagerProcess* fsmp = new G4FastSimulationManagerProcess();
+    theParticleIterator->reset();
+    while((*theParticleIterator)()) {
+        G4ParticleDefinition* particle = theParticleIterator->value();
+        G4ProcessManager* pmanager = particle->GetProcessManager();
+        pmanager->AddDiscreteProcess(fsmp);
+    }
+}
 
 void PhysicsList::AddPhysicsList(const G4String&)
 {
@@ -87,34 +109,4 @@ void PhysicsList::SetCuts()
     
   if (verboseLevel>0) DumpCutValuesTable();
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-#include "G4Gamma.hh"
-#include "G4Electron.hh"
-#include "G4Positron.hh"
-
-void PhysicsList::SetCutForGamma(G4double cut)
-{
-  fCutForGamma = cut;
-  SetParticleCuts(fCutForGamma, G4Gamma::Gamma());
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void PhysicsList::SetCutForElectron(G4double cut)
-{
-  fCutForElectron = cut;
-  SetParticleCuts(fCutForElectron, G4Electron::Electron());
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void PhysicsList::SetCutForPositron(G4double cut)
-{
-  fCutForPositron = cut;
-  SetParticleCuts(fCutForPositron, G4Positron::Positron());
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

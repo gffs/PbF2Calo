@@ -1,7 +1,6 @@
 #include "DetectorConstruction.h"
 
 #include "G4NistManager.hh"
-
 #include "G4Material.hh"
 #include "UBox.hh"
 #include "G4Usolid.hh"
@@ -79,6 +78,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
             mAl, solidAlPlate->GetName());
     new G4PVPlacement(0, G4ThreeVector(-1.5 * mm, 0, 0),
             logicAlPlate, logicAlPlate->GetName(), logicWorld, false, 0, true);
+    G4Region* regionAlPlate = new G4Region(logicAlPlate->GetName());
+    regionAlPlate->AddRootLogicalVolume(logicAlPlate);
 
     UBox* solidSiPlate = new UBox("SiPlate", 1.5 * mm,
             caloHalfWidth, caloHalfWidth);

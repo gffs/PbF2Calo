@@ -4,7 +4,6 @@
 #include "globals.hh"
 
 class G4LogicalVolume;
-class G4Material;
 
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
@@ -16,7 +15,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     const G4VPhysicalVolume* GetWorld() { return physWorld; }
 
   private:
-
     G4VPhysicalVolume* physWorld;
     G4LogicalVolume* logicWorld;
     G4double crystalLength;

@@ -25,9 +25,8 @@ class PhysicsList: public G4VModularPhysicsList
     void AddPhysicsList(const G4String&);
 
     virtual void SetCuts();
-    void SetCutForGamma(G4double);
-    void SetCutForElectron(G4double);
-    void SetCutForPositron(G4double);
+  private:
+    void AddParametrisation();
 
   private:
     G4double fCutForGamma;
