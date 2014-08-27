@@ -1,6 +1,7 @@
 #include "SteppingAction.h"
 #include "RunAction.h"
 
+#include "G4OpticalPhoton.hh"
 #include "G4RunManager.hh"
 #include "G4UserRunAction.hh"
 
@@ -21,7 +22,8 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
 {  
     G4double edep = aStep->GetTotalEnergyDeposit();
 
-    if (edep > 0) {
+    if (edep > 0 && (aStep->GetTrack()->GetParticleDefinition() 
+                != G4OpticalPhoton::OpticalPhotonDefinition())) {
         G4StepPoint* endPoint = aStep->GetPostStepPoint();
         const G4ThreeVector pos = endPoint->GetPosition();
         G4double gtime = endPoint->GetGlobalTime();

@@ -1,6 +1,7 @@
-#include "PhysicsList.h"
-#include "OpticalPhysics.h"
 #include "AlPlateModel.h"
+#include "OpticalPhysics.h"
+#include "PhysicsList.h"
+#include "SiPlateModel.h"
 
 #include "G4DecayPhysics.hh"
 #include "G4EmPenelopePhysics.hh"
@@ -11,10 +12,6 @@
 #include "G4OpticalProcessIndex.hh"
 #include "G4ProcessManager.hh"
 #include "G4RegionStore.hh"
-
-#include "G4Gamma.hh"
-#include "G4Electron.hh"
-#include "G4Positron.hh"
 
 #include "G4String.hh"
 #include "G4SystemOfUnits.hh"
@@ -77,8 +74,10 @@ void PhysicsList::ConstructProcess()
 void PhysicsList::AddParametrisation()
 {
     G4RegionStore* rs = G4RegionStore::GetInstance();
-    G4Region* alPlate = rs->GetRegion("AlPlate");
-    new AlPlateModel("AlPlate", alPlate);
+    G4Region* aPlate = rs->GetRegion("AlPlate");
+    new AlPlateModel("AlPlate", aPlate);
+    aPlate = rs->GetRegion("SiPlate");
+    new SiPlateModel("SiPlate", aPlate);
 
     G4FastSimulationManagerProcess* fsmp = new G4FastSimulationManagerProcess();
     theParticleIterator->reset();
