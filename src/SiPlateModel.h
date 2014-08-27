@@ -14,9 +14,9 @@ class SiPlateModel: public G4VFastSimulationModel
     SiPlateModel(const G4String& name, G4Region* const regionSiPlate);
     ~SiPlateModel() {}
 
-    virtual G4bool IsApplicable(const G4ParticleDefinition& aParticle);
-    virtual G4bool ModelTrigger(const G4FastTrack& aTrack);
-    virtual void DoIt(const G4FastTrack& aTrack, G4FastStep& aStep);
+    G4bool IsApplicable(const G4ParticleDefinition& aParticle);
+    G4bool ModelTrigger(const G4FastTrack& aTrack);
+    void DoIt(const G4FastTrack& aTrack, G4FastStep& aStep);
 
   private:
     const RunAction* ra_;

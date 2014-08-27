@@ -57,7 +57,7 @@ void RunAction::BeginOfRunAction(const G4Run*)
 
     eng_tree = new TTree("eng", "eng");
     eng_tree->Branch("eng_dep", &eng_dep->eng,
-            "eng/F:pos_x:pos_y:pos_z:time_g:ev_num/i:vol_nm/C", 1024*1024);
+            "eng/F:pos_x:pos_y:pos_z:time_g:ev_num/i:vol_nm[8]/C:par_nm[8]/C", 1024*1024);
     eng_tree->Fill();
     eng_tree->Reset();
 
@@ -82,7 +82,8 @@ void RunAction::EndOfRunAction(const G4Run*)
 }
 
 void RunAction::FillEnergyDeposit(G4double eng, const G4ThreeVector& pos,
-        G4double gtime, G4int evID, const G4String& physVol) const
+        G4double gtime, G4int evID, const G4String& physVol,
+        const G4String& particleName) const
 {
     struct energy_deposit ed{
         static_cast<float>(eng),
@@ -91,11 +92,13 @@ void RunAction::FillEnergyDeposit(G4double eng, const G4ThreeVector& pos,
         static_cast<float>(pos.z()),
         static_cast<float>(gtime),
         static_cast<unsigned int>(evID),
-        {}
+        {}, {}
     };
 
     strncpy(ed.vol_nm, physVol.c_str(), 7);
     ed.vol_nm[7] = '\0';
+    strncpy(ed.par_nm, particleName.c_str(), 7);
+    ed.par_nm[7] = '\0';
 
     eng_q->push(ed);
 }

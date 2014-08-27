@@ -29,10 +29,14 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
         G4double gtime = endPoint->GetGlobalTime();
         auto physVol = endPoint->GetPhysicalVolume();
         G4int evID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
+        const G4String& particleName = aStep->GetTrack()->GetParticleDefinition()->
+            GetParticleName();
         if (physVol) {
-            ra->FillEnergyDeposit(edep, pos, gtime, evID, physVol->GetName());
+            ra->FillEnergyDeposit(edep, pos, gtime, evID,
+                    physVol->GetName(), particleName);
         } else {
-            ra->FillEnergyDeposit(edep, pos, gtime, evID, outOfWorld);
+            ra->FillEnergyDeposit(edep, pos, gtime, evID,
+                    outOfWorld, particleName);
         }
     }
 }

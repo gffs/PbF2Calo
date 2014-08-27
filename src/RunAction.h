@@ -1,10 +1,9 @@
 #pragma once
 
-#include <queue>
-
 #include "G4UserRunAction.hh"
 #include "G4ThreeVector.hh"
-#include "globals.hh"
+
+#include <queue>
 
 class G4Run;
 class TFile;
@@ -18,6 +17,7 @@ struct energy_deposit {
     float time_g;
     unsigned int ev_num;
     char vol_nm[8];
+    char par_nm[8];
 };
 
 struct photon_deposit {
@@ -36,11 +36,12 @@ class RunAction : public G4UserRunAction
     RunAction();
     ~RunAction();
 
-    virtual void BeginOfRunAction(const G4Run*);
-    virtual void EndOfRunAction(const G4Run*);
+    void BeginOfRunAction(const G4Run*);
+    void EndOfRunAction(const G4Run*);
 
     void FillEnergyDeposit(G4double eng, const G4ThreeVector& pos,
-            G4double gtime, G4int evID, const G4String& physVol) const;
+            G4double gtime, G4int evID, const G4String& physVol,
+            const G4String& particleName) const;
     void FillPhotonDeposit(const G4ThreeVector& pos, G4double gtime, const G4ThreeVector& mom) const;
     void FillRootTree() const;
 
