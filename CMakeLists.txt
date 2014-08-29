@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake/modules)
 
-project(PbF2Calo_app)
+project(PbF2Calo)
 
 option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
 if(WITH_GEANT4_UIVIS)
@@ -27,9 +27,12 @@ list(APPEND headers ${headers_src})
 add_executable(PbF2Calo PbF2Calo.cc ${sources} ${headers})
 target_link_libraries(PbF2Calo ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
 
+add_subdirectory(ana)
+
+
 set(PbF2Calo_SCRIPTS
     run.mac
-  )
+)
 
 foreach(_script ${PbF2Calo_SCRIPTS})
   configure_file(

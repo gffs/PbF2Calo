@@ -1,6 +1,6 @@
 # modified $ROOTSYS/etc/cmake/FindROOT.cmake script
 # CMakeMacroParseArguments -> CMakeParseArguments
-# added roofit to libraries
+# added roofit, treeplayer(treereader) to libraries
 
 # - Finds ROOT instalation
 # This module sets up ROOT information 
@@ -41,7 +41,7 @@ else()
 
   #set(ROOT_LIBRARIES ${ROOT_LIBRARIES} -lThread -lMinuit -lHtml -lVMC -lEG -lGeom -lTreePlayer -lXMLIO -lProof)
   #set(ROOT_LIBRARIES ${ROOT_LIBRARIES} -lProofPlayer -lMLP -lSpectrum -lEve -lRGL -lGed -lXMLParser -lPhysics)
-  set(ROOT_LIBRARIES ${ROOT_LIBRARIES} -lRooFitCore -lRooFit)
+  set(ROOT_LIBRARIES ${ROOT_LIBRARIES} -lRooFitCore -lRooFit -lTreePlayer)
   set(ROOT_LIBRARY_DIR ${ROOTSYS}/lib)
 
   # Make variables changeble to the advanced user
