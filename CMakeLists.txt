@@ -3,13 +3,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake/modules)
 
 project(PbF2Calo)
 
-option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
-if(WITH_GEANT4_UIVIS)
-  find_package(Geant4 REQUIRED ui_all vis_all)
-else()
-  find_package(Geant4 REQUIRED)
-endif()
-
+find_package(Geant4 REQUIRED ui_all)
 find_package(ROOT REQUIRED)
 
 include(${Geant4_USE_FILE})
@@ -18,8 +12,11 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -arch x86_64 -std=c++1y -Wextra -Wno-sha
 include_directories(${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src)
 include_directories(${Geant4_INCLUDE_DIR})
 include_directories(${ROOT_INCLUDE_DIR})
+include_directories(contrib/json11)
 
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
+list(APPEND sources contrib/json11/json11.cpp)
+
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 file(GLOB headers_src ${PROJECT_SOURCE_DIR}/src/*.h)
 list(APPEND headers ${headers_src})
@@ -32,6 +29,7 @@ add_subdirectory(ana)
 
 set(PbF2Calo_SCRIPTS
     run.mac
+    example.json
 )
 
 foreach(_script ${PbF2Calo_SCRIPTS})

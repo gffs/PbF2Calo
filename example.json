@@ -1,0 +1,14 @@
+{
+"doc_type": "pbf2_calo_mc_conf",
+
+"physics_list": {
+    "name": "uw",
+    "production_cuts": {
+        "World":   [ 10, 100, 100, 1000 ],
+        "AlPlate": [ 10, 100, 100, 1000 ],
+        "PbF2":    [ 10, 100, 100, 1000 ],
+        "SiPlate": [ 10, 100, 100, 1000 ]
+    }
+}
+}
+

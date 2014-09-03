@@ -8,15 +8,14 @@ class G4HadronPhysicsQGSP_BIC_HP;
 class G4HadronPhysicsFTFP_BERT_HP;
 class OpticalPhysics;
 
-class PhysicsList: public PhysicsListBase
+class PhysicsListArtG4: public PhysicsListBase
 {
   public:
-    PhysicsList();
-   ~PhysicsList();
+    PhysicsListArtG4();
+   ~PhysicsListArtG4();
 
     void ConstructParticle();
     void ConstructProcess();
-    void AddPhysicsList(const G4String&);
 
   private:
     G4VPhysicsConstructor* emPhysicsList;

@@ -4,11 +4,10 @@
 #include "G4HadronPhysicsQGSP_BIC_HP.hh"
 #include "G4OpticalProcessIndex.hh"
 #include "G4ProcessManager.hh"
-#include "G4String.hh"
 #include "OpticalPhysics.h"
-#include "PhysicsList.h"
+#include "PhysicsListArtG4.h"
 
-PhysicsList::PhysicsList() :
+PhysicsListArtG4::PhysicsListArtG4() :
     PhysicsListBase(),
     emPhysicsList(new G4EmPenelopePhysics()),
     emExtraPhysicsList(new G4EmExtraPhysics()),
@@ -26,7 +25,7 @@ PhysicsList::PhysicsList() :
 }
 
 
-PhysicsList::~PhysicsList()
+PhysicsListArtG4::~PhysicsListArtG4()
 {
     delete decayPhysicsList;
     delete emPhysicsList;
@@ -36,7 +35,7 @@ PhysicsList::~PhysicsList()
 }
 
 
-void PhysicsList::ConstructParticle()
+void PhysicsListArtG4::ConstructParticle()
 {
     emPhysicsList->ConstructParticle();
     decayPhysicsList->ConstructParticle();
@@ -44,7 +43,7 @@ void PhysicsList::ConstructParticle()
 }
 
 
-void PhysicsList::ConstructProcess()
+void PhysicsListArtG4::ConstructProcess()
 {
     AddTransportation();
     AddParametrisation();
@@ -54,5 +53,4 @@ void PhysicsList::ConstructProcess()
     hadronPhysicsList->ConstructProcess();
     opticalPhysicsList->ConstructProcess();
 }
-
 
