@@ -18,5 +18,12 @@ Getting started
     cmake
     make
 
+In place of documentation
+-------------------------
+Production cuts are passed to Geant4 `G4ProductionCuts::SetProductionCuts`.
+The order is defined in `enum G4ProductionCutsIndex` (`G4ProductionCuts.hh`) as:
+`[ gamma, electron, positron, proton ]`. The unit is `um`.
+
+
 MIT License.
 

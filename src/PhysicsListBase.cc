@@ -21,10 +21,7 @@ PhysicsListBase::list_map = {
 
 
 PhysicsListBase::PhysicsListBase():
-    G4VModularPhysicsList(),
-    fCutForGamma(100 * um),
-    fCutForElectron(20 * um),
-    fCutForPositron(20 * um)
+    G4VModularPhysicsList()
 {
     G4LossTableManager::Instance();
 }
@@ -71,18 +68,24 @@ void PhysicsListBase::AddParametrisation()
 
 void PhysicsListBase::SetCuts()
 {
-     
-  if (verboseLevel >0){
-    G4cout << "PhysicsList::SetCuts:";
-    G4cout << "CutLength : " << G4BestUnit(defaultCutValue,"Length") << G4endl;
-  }  
+    auto cuts = cfg_["production_cuts"];
+    if (cuts.is_null()) { return; }
 
-  // set cut values for gamma at first and for e- second and next for e+,
-  // because some processes for e+/e- need cut values for gamma
-  SetCutValue(fCutForGamma, "gamma");
-  SetCutValue(fCutForElectron, "e-");
-  SetCutValue(fCutForPositron, "e+");   
-    
-  if (verboseLevel>0) DumpCutValuesTable();
+    G4RegionStore* rs = G4RegionStore::GetInstance();
+
+    for (auto& p: cuts.object_items()) {
+        G4Region* r = nullptr;
+        r = rs->GetRegion(p.first);
+        if (!r) { continue; }
+
+        auto vec = p.second.array_items();
+        std::vector<double> g4cuts;
+        std::transform(vec.begin(), vec.end(), std::back_inserter(g4cuts),
+                [](const json11::Json& v) { return v.number_value() * um; });
+
+        G4ProductionCuts* pc = new G4ProductionCuts();
+        pc->SetProductionCuts(g4cuts);
+        r->SetProductionCuts(pc);
+    }
 }
 
