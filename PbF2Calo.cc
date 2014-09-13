@@ -53,14 +53,10 @@ int main(int argc, char* argv[]) {
 
     DetectorConstruction* det;
     runManager->SetUserInitialization(det = new DetectorConstruction);
-
     runManager->SetUserInitialization(PhysicsListBase::init(conf["physics_list"]));
-
-    runManager->SetUserInitialization(new ActionInitialization);
-
+    runManager->SetUserInitialization(new ActionInitialization(conf["action"]));
  
   // Start execution
-  //      
   if (argc > 2) {        // execute an argument macro file if exist
     G4String command = "/control/execute ";
     G4String fileName = argv[2];

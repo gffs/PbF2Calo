@@ -8,6 +8,13 @@
         "AlPlate": [ 3000, 55, 55, 3000 ],
         "SiPlate": [ 3000, 65, 65, 3000 ]
     }
+},
+
+"action": {
+    "event": {
+        "printModulo": 10
+    }
 }
+
 }
 

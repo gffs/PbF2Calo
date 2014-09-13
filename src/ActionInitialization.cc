@@ -5,8 +5,9 @@
 #include "StackingAction.h"
 #include "SteppingAction.h"
 
-ActionInitialization::ActionInitialization() : 
-    G4VUserActionInitialization()
+ActionInitialization::ActionInitialization(const json11::Json cfg): 
+    G4VUserActionInitialization(),
+    cfg_(cfg)
 {}
 
 ActionInitialization::~ActionInitialization()
@@ -21,7 +22,7 @@ void ActionInitialization::Build() const
 {
     SetUserAction(new PrimaryGeneratorAction);
     SetUserAction(new RunAction);
-    SetUserAction(new EventAction);
+    SetUserAction(new EventAction(cfg_["event"]));
     SetUserAction(new StackingAction);
     SetUserAction(new SteppingAction);
 }  
