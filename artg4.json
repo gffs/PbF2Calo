@@ -1,0 +1,13 @@
+{
+"doc_type": "pbf2_calo_mc_conf",
+
+"physics_list": {
+    "name": "artg4",
+    "production_cuts": {
+        "DefaultRegionForTheWorld": [ 700, 700, 700, 700 ],
+        "AlPlate": [ 700, 700, 700, 700 ],
+        "SiPlate": [ 700, 700, 700, 700 ]
+    }
+}
+}
+

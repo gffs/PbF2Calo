@@ -4,8 +4,10 @@
 
 class G4EmExtraPhysics;
 class G4DecayPhysics;
-class G4HadronPhysicsQGSP_BIC_HP;
-class G4HadronPhysicsFTFP_BERT_HP;
+class G4HadronPhysicsFTFP_BERT;
+class G4HadronElasticPhysics;
+class G4StoppingPhysics;
+class G4IonPhysics;
 class OpticalPhysics;
 
 class PhysicsListArtG4: public PhysicsListBase
@@ -21,7 +23,10 @@ class PhysicsListArtG4: public PhysicsListBase
     G4VPhysicsConstructor* emPhysicsList;
     G4EmExtraPhysics* emExtraPhysicsList;
     G4DecayPhysics* decayPhysicsList;
-    G4HadronPhysicsQGSP_BIC_HP* hadronPhysicsList;
+    G4HadronElasticPhysics* hadronElasticPhysicsList;
+    G4HadronPhysicsFTFP_BERT* hadronPhysicsList;
+    G4StoppingPhysics* stoppingPhysicsList;
+    G4IonPhysics* ionPhysicsList;
     OpticalPhysics* opticalPhysicsList;
 };
 

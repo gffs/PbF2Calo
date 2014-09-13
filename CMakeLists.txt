@@ -29,7 +29,8 @@ add_subdirectory(ana)
 
 set(PbF2Calo_SCRIPTS
     run.mac
-    example.json
+    uw.json
+    artg4.json
 )
 
 foreach(_script ${PbF2Calo_SCRIPTS})

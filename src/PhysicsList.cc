@@ -1,21 +1,30 @@
+#include "G4DataQuestionaire.hh"
 #include "G4DecayPhysics.hh"
 #include "G4EmPenelopePhysics.hh"
 #include "G4EmExtraPhysics.hh"
+#include "G4HadronElasticPhysics.hh"
 #include "G4HadronPhysicsQGSP_BIC_HP.hh"
+#include "G4IonPhysics.hh"
 #include "G4OpticalProcessIndex.hh"
 #include "G4ProcessManager.hh"
+#include "G4StoppingPhysics.hh"
 #include "G4String.hh"
 #include "OpticalPhysics.h"
 #include "PhysicsList.h"
 
 PhysicsList::PhysicsList() :
     PhysicsListBase(),
-    emPhysicsList(new G4EmPenelopePhysics()),
-    emExtraPhysicsList(new G4EmExtraPhysics()),
-    decayPhysicsList(new G4DecayPhysics()),
-    hadronPhysicsList(new G4HadronPhysicsQGSP_BIC_HP()),
-    opticalPhysicsList(new OpticalPhysics())
+    emPhysicsList(new G4EmPenelopePhysics),
+    emExtraPhysicsList(new G4EmExtraPhysics),
+    decayPhysicsList(new G4DecayPhysics),
+    hadronElasticPhysicsList(new G4HadronElasticPhysics),
+    hadronPhysicsList(new G4HadronPhysicsQGSP_BIC_HP),
+    stoppingPhysicsList(new G4StoppingPhysics),
+    ionPhysicsList(new G4IonPhysics),
+    opticalPhysicsList(new OpticalPhysics)
 {
+    G4DataQuestionaire it(photon, neutron);
+
     G4String stateOn("on");
     G4String stateOff("off");
     emExtraPhysicsList->Synch(stateOff);
@@ -31,7 +40,10 @@ PhysicsList::~PhysicsList()
     delete decayPhysicsList;
     delete emPhysicsList;
     delete emExtraPhysicsList;
+    delete hadronElasticPhysicsList;
     delete hadronPhysicsList;
+    delete stoppingPhysicsList;
+    delete ionPhysicsList;
     delete opticalPhysicsList;
 }
 
@@ -51,8 +63,10 @@ void PhysicsList::ConstructProcess()
     decayPhysicsList->ConstructProcess();
     emPhysicsList->ConstructProcess();
     emExtraPhysicsList->ConstructProcess();
+    hadronElasticPhysicsList->ConstructProcess();
     hadronPhysicsList->ConstructProcess();
+    stoppingPhysicsList->ConstructProcess();
+    ionPhysicsList->ConstructProcess();
     opticalPhysicsList->ConstructProcess();
 }
-
 
