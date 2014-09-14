@@ -4,8 +4,9 @@
 "physics_list": {
     "name": "uw",
     "production_cuts": {
-        "DefaultRegionForTheWorld": [ 900, 27, 28, 0 ],
+        "DefaultRegionForTheWorld": [ 1000, 10, 10, 1000 ],
         "AlPlate": [ 3000, 55, 55, 3000 ],
+        "PbF2": [ 900, 27, 28, 0 ],
         "SiPlate": [ 3000, 65, 65, 3000 ]
     }
 },

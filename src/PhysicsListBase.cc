@@ -68,6 +68,9 @@ void PhysicsListBase::AddParametrisation()
 
 void PhysicsListBase::SetCuts()
 {
+    G4ProductionCutsTable* pct = G4ProductionCutsTable::GetProductionCutsTable();
+    pct->SetEnergyRange(100*eV, pct->GetHighEdgeEnergy());
+
     auto cuts = cfg_["production_cuts"];
     if (cuts.is_null()) { return; }
 
@@ -87,5 +90,7 @@ void PhysicsListBase::SetCuts()
         pc->SetProductionCuts(g4cuts);
         r->SetProductionCuts(pc);
     }
+
+
 }
 

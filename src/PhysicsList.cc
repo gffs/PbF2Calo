@@ -5,10 +5,13 @@
 #include "G4HadronElasticPhysics.hh"
 #include "G4HadronPhysicsQGSP_BIC_HP.hh"
 #include "G4IonPhysics.hh"
+#include "G4LossTableManager.hh"
 #include "G4OpticalProcessIndex.hh"
 #include "G4ProcessManager.hh"
+#include "G4EmProcessOptions.hh"
 #include "G4StoppingPhysics.hh"
 #include "G4String.hh"
+#include "G4VAtomDeexcitation.hh"
 #include "OpticalPhysics.h"
 #include "PhysicsList.h"
 
@@ -31,7 +34,7 @@ PhysicsList::PhysicsList() :
     emExtraPhysicsList->GammaNuclear(stateOn);
     emExtraPhysicsList->MuonNuclear(stateOn);
 
-    SetVerboseLevel(0);
+    SetVerboseLevel(1);
 }
 
 
@@ -68,5 +71,28 @@ void PhysicsList::ConstructProcess()
     stoppingPhysicsList->ConstructProcess();
     ionPhysicsList->ConstructProcess();
     opticalPhysicsList->ConstructProcess();
+
+    G4EmProcessOptions opt;
+    opt.SetVerbose(1);
+
+    //Penelope EM Physics  
+    //opt.SetMscStepLimitation(fUseDistanceToBoundary);
+    //opt.SetMscRangeFactor(0.02);
+    
+    opt.SetMinEnergy(100*eV);
+    opt.SetMaxEnergy(10*TeV);
+    opt.SetDEDXBinning(320); //default: 220
+    opt.SetLambdaBinning(320); //default: 220
+
+    //opt.SetSplineFlag(true); //default: true
+    opt.SetPolarAngleLimit(CLHEP::pi);
+    
+    // Ionization
+    //opt.SetSubCutoff(true);    
+  
+    // Deexcitation
+    G4VAtomDeexcitation* deex;
+    deex = G4LossTableManager::Instance()->AtomDeexcitation();
+    deex->SetFluo(false); //penelope default: true
 }
 

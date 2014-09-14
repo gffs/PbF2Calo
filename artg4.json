@@ -6,6 +6,7 @@
     "production_cuts": {
         "DefaultRegionForTheWorld": [ 700, 700, 700, 700 ],
         "AlPlate": [ 700, 700, 700, 700 ],
+        "PbF2": [ 700, 700, 700, 700 ],
         "SiPlate": [ 700, 700, 700, 700 ]
     }
 },

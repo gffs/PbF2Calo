@@ -88,6 +88,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
             mSi, solidSiPlate->GetName());
     new G4PVPlacement(0, G4ThreeVector(crystalLength + 1.5 * mm, 0, 0),
             logicSiPlate, logicSiPlate->GetName(), logicWorld, false, 0, true);
+    G4Region* regionSiPlate = new G4Region(logicSiPlate->GetName());
+    regionSiPlate->AddRootLogicalVolume(logicSiPlate);
 
     UBox* solidPbF2 = new UBox("PbF2", crystalLength / 2.0,
             caloHalfWidth, caloHalfWidth);
@@ -96,8 +98,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
             mPbF2, solidPbF2->GetName());
     new G4PVPlacement(0, G4ThreeVector(crystalLength / 2.0, 0, 0),
             logicPbF2, logicPbF2->GetName(), logicWorld, false, 0, true);
-    G4Region* regionSiPlate = new G4Region(logicSiPlate->GetName());
-    regionSiPlate->AddRootLogicalVolume(logicSiPlate);
+    G4Region* regionPbF2 = new G4Region(logicPbF2->GetName());
+    regionPbF2->AddRootLogicalVolume(logicPbF2);
 
     return physWorld;
 }
