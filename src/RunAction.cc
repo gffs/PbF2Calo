@@ -36,6 +36,22 @@ struct photon_deposit {
     float mom_x;
     float mom_y;
     float mom_z;
+    float kin;
+    unsigned int ev_num;
+    char vol_nm[8];
+    char par_nm[8];
+};
+
+struct secondaries_deposit {
+    float kin;
+    float pos_x;
+    float pos_y;
+    float pos_z;
+    float time_g;
+    unsigned int ev_num;
+    char vol_nm[8];
+    char par_nm[8];
+    char proc_nm[8];
 };
 
 RunAction::RunAction() : 
@@ -44,6 +60,9 @@ RunAction::RunAction() :
     eng_q(new std::queue<struct energy_deposit>()),
     eng_tree(0),
     eng_dep(0),
+    sec_q(new std::queue<struct secondaries_deposit>()),
+    sec_tree(0),
+    sec_dep(0),
     pht_q(new std::queue<struct photon_deposit>()),
     pht_tree(0),
     pht_dep(0)
@@ -56,6 +75,7 @@ RunAction::RunAction() :
 RunAction::~RunAction()
 {
     delete eng_q;
+    delete sec_q;
     delete pht_q;
 }
 
@@ -73,6 +93,7 @@ void RunAction::BeginOfRunAction(const G4Run*)
     root_file_name += ".root";
 
     eng_dep = new energy_deposit();
+    sec_dep = new secondaries_deposit();
     pht_dep = new photon_deposit();
     root_file = new TFile(root_file_name.c_str(), "recreate");
 
@@ -82,8 +103,14 @@ void RunAction::BeginOfRunAction(const G4Run*)
     eng_tree->Fill();
     eng_tree->Reset();
 
+    sec_tree = new TTree("sec", "sec");
+    sec_tree->Branch("sec_dep", &sec_dep->kin,
+            "kin/F:pos_x:pos_y:pos_z:time_g:ev_num/i:vol_nm[8]/C:par_nm[8]/C:proc_nm[8]/C", 1024*1024);
+    sec_tree->Fill();
+    sec_tree->Reset();
+
     pht_tree = new TTree("pht", "pht");
-    pht_tree->Branch("pht_dep", &pht_dep->pos_x, "pos_x/F:pos_y:pos_z:time_g:mom_x:mom_y:mom_z", 1024*1024);
+    pht_tree->Branch("pht_dep", &pht_dep->pos_x, "pos_x/F:pos_y:pos_z:time_g:mom_x:mom_y:mom_z:kin:ev_num/i:vol_nm[8]/C:par_nm[8]/C", 1024*1024);
     pht_tree->Fill();
     pht_tree->Reset();
 }
@@ -99,6 +126,7 @@ void RunAction::EndOfRunAction(const G4Run*)
 
     delete root_file;
     delete eng_dep;
+    delete sec_dep;
     delete pht_dep;
 }
 
@@ -124,7 +152,33 @@ void RunAction::FillEnergyDeposit(G4double eng, const G4ThreeVector& pos,
     eng_q->push(ed);
 }
 
-void RunAction::FillPhotonDeposit(const G4ThreeVector& pos, G4double gtime, const G4ThreeVector& mom) const
+void RunAction::FillSecondariesDeposit(G4double eng, const G4ThreeVector& pos,
+        G4double gtime, G4int evID, const G4String& physVol,
+        const G4String& particleName, const G4String& procName) const
+{
+    struct secondaries_deposit sd{
+        static_cast<float>(eng),
+        static_cast<float>(pos.x()),
+        static_cast<float>(pos.y()),
+        static_cast<float>(pos.z()),
+        static_cast<float>(gtime),
+        static_cast<unsigned int>(evID),
+        {}, {}, {}
+    };
+
+    strncpy(sd.vol_nm, physVol.c_str(), 7);
+    sd.vol_nm[7] = '\0';
+    strncpy(sd.par_nm, particleName.c_str(), 7);
+    sd.par_nm[7] = '\0';
+    strncpy(sd.proc_nm, procName.c_str(), 7);
+    sd.par_nm[7] = '\0';
+
+    sec_q->push(sd);
+}
+
+void RunAction::FillPhotonDeposit(const G4ThreeVector& pos, G4double gtime,
+        const G4ThreeVector& mom, G4int evID, G4double kin,
+        const G4String& physVol, const G4String& particleName) const
 {
     struct photon_deposit pd = {
         static_cast<float>(pos.x()),
@@ -133,8 +187,16 @@ void RunAction::FillPhotonDeposit(const G4ThreeVector& pos, G4double gtime, cons
         static_cast<float>(gtime),
         static_cast<float>(mom.x()),
         static_cast<float>(mom.y()),
-        static_cast<float>(mom.z())
+        static_cast<float>(mom.z()),
+        static_cast<float>(kin),
+        static_cast<unsigned int>(evID),
+        {}, {}
     };
+
+    strncpy(pd.vol_nm, physVol.c_str(), 7);
+    pd.vol_nm[7] = '\0';
+    strncpy(pd.par_nm, particleName.c_str(), 7);
+    pd.par_nm[7] = '\0';
 
     pht_q->push(pd);
 }
@@ -147,6 +209,12 @@ void RunAction::FillRootTree() const
         *eng_dep = eng_q->front();
         eng_q->pop();
         eng_tree->Fill();
+    }
+
+    while (!sec_q->empty()) {
+        *sec_dep = sec_q->front();
+        sec_q->pop();
+        sec_tree->Fill();
     }
 
     while (!pht_q->empty()) {

@@ -21,7 +21,15 @@ class RunAction : public G4UserRunAction
     void FillEnergyDeposit(G4double eng, const G4ThreeVector& pos,
             G4double gtime, G4int evID, const G4String& physVol,
             const G4String& particleName) const;
-    void FillPhotonDeposit(const G4ThreeVector& pos, G4double gtime, const G4ThreeVector& mom) const;
+
+    void FillSecondariesDeposit(G4double eng, const G4ThreeVector& pos,
+        G4double gtime, G4int evID, const G4String& physVol,
+        const G4String& particleName, const G4String& procName) const;
+
+    void FillPhotonDeposit(const G4ThreeVector& pos, G4double gtime,
+        const G4ThreeVector& mom, G4int evID, G4double kin,
+        const G4String& physVol, const G4String& particleName) const;
+
     void FillRootTree() const;
 
   private:
@@ -30,6 +38,10 @@ class RunAction : public G4UserRunAction
     std::queue<struct energy_deposit>* eng_q;
     TTree* eng_tree;
     struct energy_deposit* eng_dep;
+
+    std::queue<struct secondaries_deposit>* sec_q;
+    TTree* sec_tree;
+    struct secondaries_deposit* sec_dep;
 
     std::queue<struct photon_deposit>* pht_q;
     TTree* pht_tree;

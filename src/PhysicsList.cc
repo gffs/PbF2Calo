@@ -89,7 +89,9 @@ void PhysicsList::ConstructProcess()
     
     // Ionization
     //opt.SetSubCutoff(true);    
-  
+
+    opt.SetApplyCuts(true);
+
     // Deexcitation
     G4VAtomDeexcitation* deex;
     deex = G4LossTableManager::Instance()->AtomDeexcitation();

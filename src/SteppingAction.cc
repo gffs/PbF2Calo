@@ -39,5 +39,22 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
                     outOfWorld, particleName);
         }
     }
+
+    const std::vector<const G4Track*>* sec = aStep->GetSecondaryInCurrentStep();
+
+    for (auto aTrack: *sec) {
+        if (aTrack->GetParticleDefinition()->GetParticleName() == "opticalphoton") { 
+            const G4ThreeVector pos = aTrack->GetPosition();
+            const G4ThreeVector mom = aTrack->GetMomentum();
+            G4double gtime = aTrack->GetGlobalTime();
+            G4int evID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
+            G4double kin = aStep->GetTrack()->GetKineticEnergy();
+            auto physVol = aTrack->GetVolume();
+            const G4String& particleName = aStep->GetTrack()->
+                GetParticleDefinition()->GetParticleName();
+
+            ra->FillPhotonDeposit(pos, gtime, mom, evID, kin, physVol->GetName(), particleName);
+        }
+    }
 }
 
