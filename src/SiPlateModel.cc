@@ -2,6 +2,7 @@
 #include "G4RunManager.hh"
 #include "G4ThreeVector.hh"
 #include "G4UserRunAction.hh"
+#include "PhotonTrackInformation.h"
 #include "RunAction.h"
 #include "SiPlateModel.h"
 
@@ -23,8 +24,17 @@ G4bool SiPlateModel::IsApplicable(const G4ParticleDefinition&)
     return true;
 }
 
-G4bool SiPlateModel::ModelTrigger(const G4FastTrack&)
+G4bool SiPlateModel::ModelTrigger(const G4FastTrack& aFastTrack)
 {
+    const G4Track* t = aFastTrack.GetPrimaryTrack();
+    if (t->GetParticleDefinition() == G4OpticalPhoton::OpticalPhotonDefinition()) {
+        if (t->GetVolume()->GetName() == "SiPlate" &&
+                t->GetStep()->GetPreStepPoint()->GetStepStatus() == fGeomBoundary) {
+            return true;
+        }
+        else { return false; }
+    }
+    
     return true;
 }
 
@@ -37,6 +47,22 @@ void SiPlateModel::DoIt(const G4FastTrack& aTrack, G4FastStep& aStep)
     aStep.ProposeTotalEnergyDeposited(
             aTrack.GetPrimaryTrack()->GetKineticEnergy());
 
+    const G4Track* tr = aTrack.GetPrimaryTrack();
+
     //todo: a proper sipm response
+    if (tr->GetParticleDefinition() !=
+            G4OpticalPhoton::OpticalPhotonDefinition()) {
+        return;
+    }
+    PhotonTrackInformation* pti =
+        static_cast<PhotonTrackInformation*>(tr->GetUserInformation());
+
+    const G4ThreeVector pos = tr->GetPosition();
+    const G4ThreeVector mom = tr->GetMomentum();
+    G4double gtime = tr->GetGlobalTime();
+    G4int evID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
+
+    ra_->FillPhotonDetDeposit(pos, gtime, mom, evID);
+
 }
 

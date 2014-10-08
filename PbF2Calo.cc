@@ -51,8 +51,7 @@ int main(int argc, char* argv[]) {
     
     G4MTRunManager* runManager = new G4MTRunManager;
 
-    DetectorConstruction* det;
-    runManager->SetUserInitialization(det = new DetectorConstruction);
+    runManager->SetUserInitialization(new DetectorConstruction(conf["detector_construction"]));
     runManager->SetUserInitialization(PhysicsListBase::init(conf["physics_list"]));
     runManager->SetUserInitialization(new ActionInitialization(conf["action"]));
  

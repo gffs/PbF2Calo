@@ -54,6 +54,17 @@ struct secondaries_deposit {
     char proc_nm[8];
 };
 
+struct photon_det_deposit {
+    float pos_x;
+    float pos_y;
+    float pos_z;
+    float time_g;
+    float mom_x;
+    float mom_y;
+    float mom_z;
+    unsigned int ev_num;
+};
+
 RunAction::RunAction() : 
     G4UserRunAction(),
     root_file(0),
@@ -65,7 +76,10 @@ RunAction::RunAction() :
     sec_dep(0),
     pht_q(new std::queue<struct photon_deposit>()),
     pht_tree(0),
-    pht_dep(0)
+    pht_dep(0),
+    pht_det_q(new std::queue<struct photon_det_deposit>()),
+    pht_det_tree(0),
+    pht_det_dep(0)
 {
     //register this thread with root
     TThread();
@@ -77,6 +91,7 @@ RunAction::~RunAction()
     delete eng_q;
     delete sec_q;
     delete pht_q;
+    delete pht_det_q;
 }
 
 std::mutex root_extra_mutex;
@@ -95,6 +110,7 @@ void RunAction::BeginOfRunAction(const G4Run*)
     eng_dep = new energy_deposit();
     sec_dep = new secondaries_deposit();
     pht_dep = new photon_deposit();
+    pht_det_dep = new photon_det_deposit();
     root_file = new TFile(root_file_name.c_str(), "recreate");
 
     eng_tree = new TTree("eng", "eng");
@@ -109,10 +125,15 @@ void RunAction::BeginOfRunAction(const G4Run*)
     sec_tree->Fill();
     sec_tree->Reset();
 
-    pht_tree = new TTree("pht", "pht");
+    pht_tree = new TTree("pht_org", "pht_org");
     pht_tree->Branch("pht_dep", &pht_dep->pos_x, "pos_x/F:pos_y:pos_z:time_g:mom_x:mom_y:mom_z:kin:ev_num/i:vol_nm[8]/C:par_nm[8]/C", 1024*1024);
     pht_tree->Fill();
     pht_tree->Reset();
+
+    pht_det_tree = new TTree("pht_det", "pht_det");
+    pht_det_tree->Branch("pht_det_dep", &pht_det_dep->pos_x, "pos_x/F:pos_y:pos_z:time_g:mom_x:mom_y:mom_z:ev_num/i", 1024*1024);
+    pht_det_tree->Fill();
+    pht_det_tree->Reset();
 }
 
 void RunAction::EndOfRunAction(const G4Run*)
@@ -128,6 +149,7 @@ void RunAction::EndOfRunAction(const G4Run*)
     delete eng_dep;
     delete sec_dep;
     delete pht_dep;
+    delete pht_det_dep;
 }
 
 void RunAction::FillEnergyDeposit(G4double eng, const G4ThreeVector& pos,
@@ -201,6 +223,23 @@ void RunAction::FillPhotonDeposit(const G4ThreeVector& pos, G4double gtime,
     pht_q->push(pd);
 }
 
+void RunAction::FillPhotonDetDeposit(const G4ThreeVector& pos, G4double gtime,
+        const G4ThreeVector& mom, G4int evID) const
+{
+    struct photon_det_deposit pdd = {
+        static_cast<float>(pos.x()),
+        static_cast<float>(pos.y()),
+        static_cast<float>(pos.z()),
+        static_cast<float>(gtime),
+        static_cast<float>(mom.x()),
+        static_cast<float>(mom.y()),
+        static_cast<float>(mom.z()),
+        static_cast<unsigned int>(evID),
+    };
+
+    pht_det_q->push(pdd);
+}
+
 void RunAction::FillRootTree() const
 {
     std::unique_lock<std::mutex> root_extra_lock(root_extra_mutex);
@@ -222,6 +261,11 @@ void RunAction::FillRootTree() const
         pht_q->pop();
         pht_tree->Fill();
     }
-}
 
+    while (!pht_det_q->empty()) {
+        *pht_det_dep = pht_det_q->front();
+        pht_det_q->pop();
+        pht_det_tree->Fill();
+    }    
+}
 

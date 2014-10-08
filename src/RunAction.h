@@ -30,6 +30,9 @@ class RunAction : public G4UserRunAction
         const G4ThreeVector& mom, G4int evID, G4double kin,
         const G4String& physVol, const G4String& particleName) const;
 
+    void FillPhotonDetDeposit(const G4ThreeVector& pos, G4double gtime,
+        const G4ThreeVector& mom, G4int evID) const;
+
     void FillRootTree() const;
 
   private:
@@ -46,5 +49,9 @@ class RunAction : public G4UserRunAction
     std::queue<struct photon_deposit>* pht_q;
     TTree* pht_tree;
     struct photon_deposit* pht_dep;
+
+    std::queue<struct photon_det_deposit>* pht_det_q;
+    TTree* pht_det_tree;
+    struct photon_det_deposit* pht_det_dep;
 };
 

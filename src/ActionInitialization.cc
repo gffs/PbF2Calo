@@ -4,6 +4,7 @@
 #include "EventAction.h"
 #include "StackingAction.h"
 #include "SteppingAction.h"
+#include "TrackingAction.h"
 
 ActionInitialization::ActionInitialization(const json11::Json cfg): 
     G4VUserActionInitialization(),
@@ -24,6 +25,7 @@ void ActionInitialization::Build() const
     SetUserAction(new RunAction);
     SetUserAction(new EventAction(cfg_["event"]));
     SetUserAction(new StackingAction);
+    SetUserAction(new TrackingAction);
     SetUserAction(new SteppingAction);
 }  
 

@@ -1,10 +1,13 @@
-#include "G4OpticalPhoton.hh"
+#include "G4OpBoundaryProcess.hh"
+#include "G4BuilderType.hh"
 #include "G4Cerenkov.hh"
+#include "G4OpAbsorption.hh"
+#include "G4OpticalPhoton.hh"
+#include "G4PhysicsListHelper.hh"
+#include "G4ProcessManager.hh"
 
 #include "OpticalPhysics.h"
 
-#include "G4PhysicsListHelper.hh"
-#include "G4BuilderType.hh"
 
 OpticalPhysics::OpticalPhysics():
     G4VPhysicsConstructor("OpticalPhysics")
@@ -35,6 +38,11 @@ void OpticalPhysics::ConstructProcess()
             ph->RegisterProcess(cerenkov, particle);
         }
     }
+
+    G4ProcessManager* pm = G4OpticalPhoton::OpticalPhoton()->GetProcessManager();
+    pm->AddDiscreteProcess(new G4OpAbsorption());
+    pm->AddDiscreteProcess(new G4OpBoundaryProcess());
+
 }
 
 
