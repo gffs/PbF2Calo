@@ -2,9 +2,8 @@
 #include "PrimaryGeneratorAction.hh"
 #include "RunAction.h"
 #include "EventAction.h"
-#include "StackingAction.h"
 #include "SteppingAction.h"
-#include "TrackingAction.h"
+#include "TrackAction.h"
 
 ActionInitialization::ActionInitialization(const json11::Json cfg): 
     G4VUserActionInitialization(),
@@ -24,8 +23,9 @@ void ActionInitialization::Build() const
     SetUserAction(new PrimaryGeneratorAction);
     SetUserAction(new RunAction);
     SetUserAction(new EventAction(cfg_["event"]));
-    SetUserAction(new StackingAction);
-    SetUserAction(new TrackingAction);
+    TrackAction* ta = new TrackAction;
+    SetUserAction(static_cast<G4UserStackingAction*>(ta));
+    SetUserAction(static_cast<G4UserTrackingAction*>(ta));
     SetUserAction(new SteppingAction);
-}  
+}
 

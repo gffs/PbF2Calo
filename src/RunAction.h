@@ -23,15 +23,16 @@ class RunAction : public G4UserRunAction
             const G4String& particleName) const;
 
     void FillSecondariesDeposit(G4double eng, const G4ThreeVector& pos,
-        G4double gtime, G4int evID, const G4String& physVol,
-        const G4String& particleName, const G4String& procName) const;
+            G4double gtime, G4int evID, const G4String& physVol,
+            const G4String& particleName, const G4String& procName) const;
 
     void FillPhotonDeposit(const G4ThreeVector& pos, G4double gtime,
-        const G4ThreeVector& mom, G4int evID, G4double kin,
-        const G4String& physVol, const G4String& particleName) const;
+            const G4ThreeVector& mom, G4int evID, G4double kin,
+            const G4String& physVol, const G4String& particleName) const;
 
     void FillPhotonDetDeposit(const G4ThreeVector& pos, G4double gtime,
-        const G4ThreeVector& mom, G4int evID) const;
+            const G4ThreeVector& mom, G4int evID, const G4ThreeVector& pos_org,
+            const G4ThreeVector& mom_org) const;
 
     void FillRootTree() const;
 

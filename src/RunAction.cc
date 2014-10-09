@@ -62,6 +62,12 @@ struct photon_det_deposit {
     float mom_x;
     float mom_y;
     float mom_z;
+    float pos_org_x;
+    float pos_org_y;
+    float pos_org_z;
+    float mom_org_x;
+    float mom_org_y;
+    float mom_org_z;
     unsigned int ev_num;
 };
 
@@ -131,7 +137,7 @@ void RunAction::BeginOfRunAction(const G4Run*)
     pht_tree->Reset();
 
     pht_det_tree = new TTree("pht_det", "pht_det");
-    pht_det_tree->Branch("pht_det_dep", &pht_det_dep->pos_x, "pos_x/F:pos_y:pos_z:time_g:mom_x:mom_y:mom_z:ev_num/i", 1024*1024);
+    pht_det_tree->Branch("pht_det_dep", &pht_det_dep->pos_x, "pos_x/F:pos_y:pos_z:time_g:mom_x:mom_y:mom_z:pos_org_x:pos_org_y:pos_org_z:mom_org_x:mom_org_y:mom_org_z:ev_num/i", 1024*1024);
     pht_det_tree->Fill();
     pht_det_tree->Reset();
 }
@@ -224,7 +230,8 @@ void RunAction::FillPhotonDeposit(const G4ThreeVector& pos, G4double gtime,
 }
 
 void RunAction::FillPhotonDetDeposit(const G4ThreeVector& pos, G4double gtime,
-        const G4ThreeVector& mom, G4int evID) const
+        const G4ThreeVector& mom, G4int evID, const G4ThreeVector& pos_org,
+        const G4ThreeVector& mom_org) const
 {
     struct photon_det_deposit pdd = {
         static_cast<float>(pos.x()),
@@ -234,7 +241,13 @@ void RunAction::FillPhotonDetDeposit(const G4ThreeVector& pos, G4double gtime,
         static_cast<float>(mom.x()),
         static_cast<float>(mom.y()),
         static_cast<float>(mom.z()),
-        static_cast<unsigned int>(evID),
+        static_cast<float>(pos_org.x()),
+        static_cast<float>(pos_org.y()),
+        static_cast<float>(pos_org.z()),
+        static_cast<float>(mom_org.x()),
+        static_cast<float>(mom_org.y()),
+        static_cast<float>(mom_org.z()),
+        static_cast<unsigned int>(evID)
     };
 
     pht_det_q->push(pdd);

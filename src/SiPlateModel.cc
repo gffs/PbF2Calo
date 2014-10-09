@@ -62,7 +62,8 @@ void SiPlateModel::DoIt(const G4FastTrack& aTrack, G4FastStep& aStep)
     G4double gtime = tr->GetGlobalTime();
     G4int evID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
 
-    ra_->FillPhotonDetDeposit(pos, gtime, mom, evID);
+    ra_->FillPhotonDetDeposit(pos, gtime, mom, evID,
+            pti->pos_org, pti->mom_org);
 
 }
 
