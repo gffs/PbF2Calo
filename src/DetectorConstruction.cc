@@ -117,13 +117,21 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     new G4PVPlacement(0, G4ThreeVector(-1.4 * mm, 0, 0),
             logicNusil, logicNusil->GetName(), logicSiPlate, false, 0, true);
 
-    UBox* solidEpoxy = new UBox("Epoxy", 0.1 * mm,
+    UBox* solidEpoxy = new UBox("Epoxy", 0.225 * mm,
             caloHalfWidth, caloHalfWidth);
     G4LogicalVolume* logicEpoxy = new G4LogicalVolume(
             new G4USolid(solidEpoxy->GetName(), solidEpoxy),
             mEpoxy, solidEpoxy->GetName());
-    new G4PVPlacement(0, G4ThreeVector(-1.2 * mm, 0, 0),
+    new G4PVPlacement(0, G4ThreeVector(-1.075 * mm, 0, 0),
             logicEpoxy, logicEpoxy->GetName(), logicSiPlate, false, 0, true);
+
+    UBox* solidSiActive = new UBox("SiActive", 0.075 * mm,
+            caloHalfWidth, caloHalfWidth);
+    G4LogicalVolume* logicSiActive = new G4LogicalVolume(
+            new G4USolid(solidSiActive->GetName(), solidSiActive),
+            mSi, solidSiActive->GetName());
+    new G4PVPlacement(0, G4ThreeVector(-0.775 * mm, 0, 0),
+            logicSiActive, logicSiActive->GetName(), logicSiPlate, false, 0, true);
 
     UBox* solidPbF2 = new UBox("PbF2", crystalLength / 2.0,
             caloHalfWidth, caloHalfWidth);
