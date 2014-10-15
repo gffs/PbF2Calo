@@ -13,5 +13,6 @@ class PhotonTrackInformation: public G4VUserTrackInformation
   public:
     G4ThreeVector pos_org;
     G4ThreeVector mom_org;
+    unsigned short num_bounces;
 };
 

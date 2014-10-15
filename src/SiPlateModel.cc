@@ -49,7 +49,6 @@ void SiPlateModel::DoIt(const G4FastTrack& aTrack, G4FastStep& aStep)
 
     const G4Track* tr = aTrack.GetPrimaryTrack();
 
-    //todo: a proper sipm response
     if (tr->GetParticleDefinition() !=
             G4OpticalPhoton::OpticalPhotonDefinition()) {
         return;
@@ -63,7 +62,6 @@ void SiPlateModel::DoIt(const G4FastTrack& aTrack, G4FastStep& aStep)
     G4int evID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
 
     ra_->FillPhotonDetDeposit(pos, gtime, mom, evID,
-            pti->pos_org, pti->mom_org);
-
+            pti->pos_org, pti->mom_org, pti->num_bounces);
 }
 

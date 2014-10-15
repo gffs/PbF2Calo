@@ -6,12 +6,11 @@
 #include "G4RegionStore.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4VFastSimulationModel.hh"
-#include "SiPlateModel.h"
-
+#include "PbF2Model.h"
 #include "PhysicsListBase.h"
 #include "PhysicsList.h"
 #include "PhysicsListArtG4.h"
-
+#include "SiPlateModel.h"
 
 std::unordered_map<std::string, PhysicsListBase*(*)()>
 PhysicsListBase::list_map = {
@@ -19,13 +18,11 @@ PhysicsListBase::list_map = {
     {"artg4", &PhysicsListBase::create<PhysicsListArtG4>}
 };
 
-
 PhysicsListBase::PhysicsListBase():
     G4VModularPhysicsList()
 {
     G4LossTableManager::Instance();
 }
-
 
 PhysicsListBase* PhysicsListBase::init(const json11::Json& cfg)
 {
@@ -44,17 +41,14 @@ PhysicsListBase* PhysicsListBase::init(const json11::Json& cfg)
     return it->second();
 }
 
-
 json11::Json PhysicsListBase::cfg_ = json11::Json();
-
 
 void PhysicsListBase::AddParametrisation()
 {
     G4RegionStore* rs = G4RegionStore::GetInstance();
-    G4Region* aPlate = rs->GetRegion("AlPlate");
-    new AlPlateModel("AlPlate", aPlate);
-    aPlate = rs->GetRegion("SiPlate");
-    new SiPlateModel("SiPlate", aPlate);
+    new AlPlateModel("AlPlate", rs->GetRegion("AlPlate"));
+    new SiPlateModel("SiPlate", rs->GetRegion("SiPlate"));
+    new PbF2Model("PbF2", rs->GetRegion("PbF2"));
 
     G4FastSimulationManagerProcess* fsmp = new G4FastSimulationManagerProcess();
     theParticleIterator->reset();
@@ -64,7 +58,6 @@ void PhysicsListBase::AddParametrisation()
         pmanager->AddDiscreteProcess(fsmp);
     }
 }
-
 
 void PhysicsListBase::SetCuts()
 {
@@ -90,7 +83,5 @@ void PhysicsListBase::SetCuts()
         pc->SetProductionCuts(g4cuts);
         r->SetProductionCuts(pc);
     }
-
-
 }
 

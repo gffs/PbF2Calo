@@ -32,7 +32,7 @@ class RunAction : public G4UserRunAction
 
     void FillPhotonDetDeposit(const G4ThreeVector& pos, G4double gtime,
             const G4ThreeVector& mom, G4int evID, const G4ThreeVector& pos_org,
-            const G4ThreeVector& mom_org) const;
+            const G4ThreeVector& mom_org, const unsigned short num_bounces) const;
 
     void FillRootTree() const;
 
