@@ -41,8 +41,9 @@ void OpticalPhysics::ConstructProcess()
 
     G4ProcessManager* pm = G4OpticalPhoton::OpticalPhoton()->GetProcessManager();
     pm->AddDiscreteProcess(new G4OpAbsorption());
-    pm->AddDiscreteProcess(new G4OpBoundaryProcess());
-
+    auto opBo = new G4OpBoundaryProcess();
+    //opBo->SetVerboseLevel(2);
+    pm->AddDiscreteProcess(opBo);
 }
 
 

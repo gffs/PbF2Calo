@@ -3,7 +3,9 @@
 #include "G4VUserDetectorConstruction.hh"
 #include "globals.hh"
 #include "json11.hpp"
+#include <unordered_set>
 
+class VUSolid;
 class G4LogicalVolume;
 
 class DetectorConstruction : public G4VUserDetectorConstruction
@@ -20,6 +22,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume* physWorld;
     G4LogicalVolume* logicWorld;
     G4double crystalLength;
+    std::unordered_set<VUSolid*> usolidStore;
 
     json11::Json cfg_;
 };

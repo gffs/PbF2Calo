@@ -1,24 +1,27 @@
 #include "DetectorConstruction.h"
-
-#include "G4NistManager.hh"
-#include "G4Material.hh"
-#include "UBox.hh"
-#include "G4Usolid.hh"
-#include "G4LogicalVolume.hh"
-#include "G4PVPlacement.hh"
-
 #include "G4GeometryManager.hh"
-#include "G4PhysicalVolumeStore.hh"
+#include "G4Material.hh"
+#include "G4NistManager.hh"
+#include "G4LogicalBorderSurface.hh"
+#include "G4LogicalVolume.hh"
 #include "G4LogicalVolumeStore.hh"
-#include "G4SolidStore.hh"
-
-#include "G4UnitsTable.hh"
+#include "G4OpticalSurface.hh"
 #include "G4PhysicalConstants.hh"
+#include "G4PhysicalVolumeStore.hh"
+#include "G4PVPlacement.hh"
+#include "G4SolidStore.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4UnitsTable.hh"
+#include "G4Usolid.hh"
+#include "UBox.hh"
+#include "UMultiUnion.hh"
+
+#include <array>
 
 DetectorConstruction::DetectorConstruction(const json11::Json cfg):
     G4VUserDetectorConstruction(),
     crystalLength(140 * mm),
+    usolidStore(),
     cfg_(cfg)
 {
 }
@@ -27,6 +30,7 @@ DetectorConstruction::~DetectorConstruction()
 {
     delete physWorld;
     delete logicWorld;
+    usolidStore.clear();
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
@@ -41,6 +45,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4Material* mO = nistManager->FindOrBuildMaterial("G4_O");
     G4Material* mPb = nistManager->FindOrBuildMaterial("G4_Pb");
     G4Material* mSi = nistManager->FindOrBuildMaterial("G4_Si");
+    G4Material* mMylar = nistManager->FindOrBuildMaterial("G4_MYLAR");
+
 
     G4Material* mPbF2 = new G4Material("PbF2", 7.77*g/cm3, 2);
     mPbF2->AddMaterial(mPb, 0.84504);
@@ -138,10 +144,82 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4LogicalVolume* logicPbF2 = new G4LogicalVolume(
             new G4USolid(solidPbF2->GetName(), solidPbF2),
             mPbF2, solidPbF2->GetName());
-    new G4PVPlacement(0, G4ThreeVector(crystalLength / 2.0, 0, 0),
+    auto physicalPbF2 = new G4PVPlacement(0, G4ThreeVector(crystalLength / 2.0, 0, 0),
             logicPbF2, logicPbF2->GetName(), logicWorld, false, 0, true);
     G4Region* regionPbF2 = new G4Region(logicPbF2->GetName());
     regionPbF2->AddRootLogicalVolume(logicPbF2);
+
+    if (cfg_["crystal_wrapping"]["is_present"].bool_value()) {
+        UBox& solidWrappingLayer = *new UBox("Wrapping", crystalLength / 2.0, 
+                caloHalfWidth, 0.050);
+        usolidStore.insert(&solidWrappingLayer);
+        UMultiUnion* solidWrapping = new UMultiUnion("Wrapping");
+
+        unsigned short num_layers = (int)((caloHalfWidth - 12.5) / 25.0);
+        for (unsigned short i = 0; i < 2 * num_layers; i++) {
+            float offset = (-num_layers + i - 0.5) * 25.0;
+            UTransform3D& aTv = *new UTransform3D(0,0,offset, 0,0,0);
+            solidWrapping->AddNode(solidWrappingLayer, aTv);
+
+            //angles in deg are euler in x convention: z, x, z
+            UTransform3D& aTh = *new UTransform3D(0,offset,0, 0,90,0);
+            solidWrapping->AddNode(solidWrappingLayer, aTh);
+        }
+
+        solidWrapping->Voxelize();
+        solidWrapping->Capacity();
+
+        G4LogicalVolume* logicWrapping = new G4LogicalVolume(
+                new G4USolid(solidWrapping->GetName(), solidWrapping),
+                mMylar, solidWrapping->GetName());
+        auto physicalWrapping = new G4PVPlacement(0, G4ThreeVector(0, 0, 0),
+                logicWrapping, logicWrapping->GetName(), logicPbF2, false, 0, true);
+
+        G4OpticalSurface* osWrapping = new G4OpticalSurface("wrapping");
+        osWrapping->SetType(dielectric_dielectric);
+        osWrapping->SetModel(unified);
+
+        std::string wrappingName = cfg_["crystal_wrapping"]["material"].string_value();
+        auto opProp = cfg_["optical_properties"][wrappingName];
+
+        std::map<std::string, int> opFinish = {
+            {"polished", polished},
+            {"polishedfrontpainted", polishedfrontpainted},
+            {"polishedbackpainted", polishedbackpainted},
+            {"ground", ground},
+            {"groundfrontpainte", groundfrontpainted},
+            {"groundbackpainted", groundbackpainted}
+        };
+
+        osWrapping->SetFinish(static_cast<G4OpticalSurfaceFinish>
+                (opFinish[opProp["finish"].string_value()]));
+        osWrapping->SetSigmaAlpha(opProp["sigma_alpha"].number_value());
+
+        std::array<std::string, 9> opArray = {{
+            "RINDEX", "SPECULARLOBECONSTANT", "SPECULARSPIKECONSTANT",
+            "BACKSCATTERCONSTANT", "REFLECTIVITY", "TRANSMITTANCE",
+            "EFFICIENCY", "REALRINDEX", "IMAGINARYRINDEX"
+        }}; 
+
+        G4MaterialPropertiesTable* ompt = new G4MaterialPropertiesTable();
+        for (auto prop: opArray) {
+            auto op_cfg = opProp[prop];
+            if (op_cfg.is_null()) { continue; }
+
+            const char* key = prop.c_str();
+            ompt->AddProperty(key, new G4MaterialPropertyVector());
+
+            for (auto& pr: op_cfg.array_items()) {
+                G4double eng = h_Planck * c_light * MeV / (nm * pr[0].number_value());
+                G4double val = pr[1].number_value();
+                ompt->AddEntry(key, eng, val);
+            }
+        }
+        //ompt->DumpTable();
+        osWrapping->SetMaterialPropertiesTable(ompt);
+
+        new G4LogicalBorderSurface("WrappingOpSurface", physicalPbF2, physicalWrapping, osWrapping);
+    }
 
     return physWorld;
 }
