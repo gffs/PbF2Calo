@@ -1,6 +1,28 @@
 {
 "doc_type": "pbf2_calo_mc_conf",
 
+"action": {
+    "generator": {
+        "particle": "e-",
+        "energy": 3000,
+        "momentum_direction": [1.0, 0.0, 0.0],
+        "particle_position": [0.0, 0.0, 0.0]
+    },
+    "event": {
+        "printModulo": 10
+    }
+},
+
+"physics_list": {
+    "name": "uw",
+    "production_cuts": {
+        "DefaultRegionForTheWorld": [ 1000, 10, 10, 1000 ],
+        "AlPlate": [ 3000, 55, 55, 3000 ],
+        "PbF2": [ 900, 27, 28, 0 ],
+        "SiPlate": [ 3000, 65, 65, 3000 ]
+    }
+},
+
 "detector_construction": {
     "crystal_wrapping": {
         "is_present": true,
@@ -111,22 +133,6 @@
             ],
             "ABSLENGTH": [ [100, 1e3], [2000, 1e3] ]
         }
-    }
-},
-
-"physics_list": {
-    "name": "uw",
-    "production_cuts": {
-        "DefaultRegionForTheWorld": [ 1000, 10, 10, 1000 ],
-        "AlPlate": [ 3000, 55, 55, 3000 ],
-        "PbF2": [ 900, 27, 28, 0 ],
-        "SiPlate": [ 3000, 65, 65, 3000 ]
-    }
-},
-
-"action": {
-    "event": {
-        "printModulo": 10
     }
 }
 

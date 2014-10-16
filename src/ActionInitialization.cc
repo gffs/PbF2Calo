@@ -1,11 +1,11 @@
 #include "ActionInitialization.h"
-#include "PrimaryGeneratorAction.hh"
-#include "RunAction.h"
 #include "EventAction.h"
+#include "PrimaryGeneratorAction.h"
+#include "RunAction.h"
 #include "SteppingAction.h"
 #include "TrackAction.h"
 
-ActionInitialization::ActionInitialization(const json11::Json cfg): 
+ActionInitialization::ActionInitialization(const json11::Json& cfg): 
     G4VUserActionInitialization(),
     cfg_(cfg)
 {}
@@ -20,7 +20,7 @@ void ActionInitialization::BuildForMaster() const
 
 void ActionInitialization::Build() const
 {
-    SetUserAction(new PrimaryGeneratorAction);
+    SetUserAction(new PrimaryGeneratorAction(cfg_["generator"]));
     SetUserAction(new RunAction);
     SetUserAction(new EventAction(cfg_["event"]));
     TrackAction* ta = new TrackAction;

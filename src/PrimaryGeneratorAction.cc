@@ -1,4 +1,4 @@
-#include "PrimaryGeneratorAction.hh"
+#include "PrimaryGeneratorAction.h"
 #include "G4Event.hh"
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
@@ -6,14 +6,19 @@
 #include "Randomize.hh"
 
 
-PrimaryGeneratorAction::PrimaryGeneratorAction() :
+PrimaryGeneratorAction::PrimaryGeneratorAction(const json11::Json& cfg):
     G4VUserPrimaryGeneratorAction(),
-    fParticleGun(new G4ParticleGun(1))
+    fParticleGun(new G4ParticleGun(1)),
+    cfg_(cfg)
 {
-    G4ParticleDefinition* particle = G4ParticleTable::GetParticleTable()->FindParticle("e-");
-    fParticleGun->SetParticleDefinition(particle);
-    fParticleGun->SetParticleEnergy(3000*MeV);    
-    fParticleGun->SetParticleMomentumDirection(G4ThreeVector(1.,0.,0.));
+    fParticleGun->SetParticleDefinition(G4ParticleTable::GetParticleTable()->
+        FindParticle(cfg_["particle"].string_value()));
+
+    fParticleGun->SetParticleEnergy(cfg_["energy"].number_value() * MeV);    
+
+    auto ma = cfg_["momentum_direction"].array_items();
+    fParticleGun->SetParticleMomentumDirection(
+            { ma[0].number_value(), ma[1].number_value(), ma[2].number_value() });
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
@@ -23,7 +28,10 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-    fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, 0));
+    auto pp = cfg_["particle_position"].array_items();
+    fParticleGun->SetParticlePosition(
+            { pp[0].number_value(), pp[1].number_value(), pp[2].number_value() });
+
     fParticleGun->GeneratePrimaryVertex(anEvent);
 }
 

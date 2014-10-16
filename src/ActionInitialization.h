@@ -6,7 +6,7 @@
 class ActionInitialization : public G4VUserActionInitialization
 {
   public:
-    ActionInitialization(const json11::Json cfg);
+    ActionInitialization(const json11::Json& cfg);
     ActionInitialization(): ActionInitialization(json11::Json()) {}
     virtual ~ActionInitialization();
 
