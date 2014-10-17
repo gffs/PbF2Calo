@@ -61,7 +61,19 @@ void SiPlateModel::DoIt(const G4FastTrack& aTrack, G4FastStep& aStep)
     G4double gtime = tr->GetGlobalTime();
     G4int evID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
 
+    const G4ThreeVector pos_org = pti->pos_org;
+
+    //check for leakage in the SiPM sandwich
+    //to be replaced by a proper SiPM model
+    bool isOK = true;
+    for (auto& i: {1, 2}) {
+        auto idx = std::floor((pos[i] - 12.5) / 25);
+        auto idx_org = std::floor((pos_org[i] - 12.5) / 25);
+        if (isOK && idx != idx_org) {isOK = false; }
+    }
+    if (!isOK) { return; }
+
     ra_->FillPhotonDetDeposit(pos, gtime, mom, evID,
-            pti->pos_org, pti->mom_org, pti->num_bounces);
+            pos_org, pti->mom_org, pti->num_bounces);
 }
 

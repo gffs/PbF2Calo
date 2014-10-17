@@ -31,8 +31,8 @@
     "optical_properties": {
         "white_polished": {
             "finish": "polishedbackpainted",
-            "sigma_alpha": 0.08,
-            "RINDEX": [ [100, 1.300001], [1000, 1.300001] ],
+            "sigma_alpha": 0.085,
+            "RINDEX": [ [100, 1.4], [1000, 1.4] ],
             "SPECULARSPIKECONSTANT": [ [100, 0.0], [1000, 0.0] ],
             "SPECULARLOBECONSTANT": [ [100, 1.0], [1000, 1.0] ],
             "BACKSCATTERCONSTANT": [ [100, 0.0], [1000, 0.0] ],
@@ -42,8 +42,8 @@
         },
         "white_ground": {
             "finish": "groundbackpainted",
-            "sigma_alpha": 0.08,
-            "RINDEX": [ [100, 1.300001], [1000, 1.300001] ],
+            "sigma_alpha": 0.085,
+            "RINDEX": [ [100, 1.4], [1000, 1.4] ],
             "SPECULARSPIKECONSTANT": [ [100, 0.0], [1000, 0.0] ],
             "SPECULARLOBECONSTANT": [ [100, 1.0], [1000, 1.0] ],
             "BACKSCATTERCONSTANT": [ [100, 0.0], [1000, 0.0] ],
@@ -53,8 +53,8 @@
         },
         "black": {
             "finish": "groundbackpainted",
-            "sigma_alpha": 0.08,
-            "RINDEX": [ [100, 1.300001], [1000, 1.300001] ],
+            "sigma_alpha": 0.085,
+            "RINDEX": [ [100, 1.4], [1000, 1.4] ],
             "SPECULARSPIKECONSTANT": [ [100, 0.0], [1000, 0.0] ],
             "SPECULARLOBECONSTANT": [ [100, 1.0], [1000, 1.0] ],
             "BACKSCATTERCONSTANT": [ [100, 0.0], [1000, 0.0] ],
