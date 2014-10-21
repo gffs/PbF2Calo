@@ -1,0 +1,35 @@
+#include <cassert>
+#include "JsonUtility.h"
+
+#include "G4ThreeVector.hh"
+
+namespace json11 {
+
+//http://stackoverflow.com/a/20441189, http://stackoverflow.com/a/11044592
+
+template <typename T>
+template <typename arg, size_t... I>
+T InitImpl<T>::unpack_helper(std::vector<arg>& args, std::index_sequence<I...>) {
+    return T(args[I]...);
+}
+
+template <typename T>
+template <size_t n, typename arg>
+T InitImpl<T>::unpack(const Json& j) {
+    auto ma = j.array_items();
+    std::vector<arg> v;
+    std::transform(ma.begin(), ma.end(), std::back_inserter(v),
+        [](const Json& x) { return x.number_value(); });
+
+    assert(v.size() == n);
+
+    return unpack_helper(v, std::make_index_sequence<n>{});
+}
+
+template <>
+G4ThreeVector Init<G4ThreeVector>(const Json& j) {
+    return InitImpl<G4ThreeVector>().unpack<3, double>(j);
+}
+
+} //namespace json11
+
