@@ -95,12 +95,12 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
             G4ThreeVector(0, 0, 0), //world has to be centered at origin
             logicWorld, logicWorld->GetName(), 0, false, 0, true);
 
-    UBox* solidAlPlate = new UBox("AlPlate", 1.5 * mm,
+    UBox* solidAlPlate = new UBox("AlPlate", 2.0 * mm,
             caloHalfWidth, caloHalfWidth);
     G4LogicalVolume* logicAlPlate = new G4LogicalVolume(
             new G4USolid(solidAlPlate->GetName(), solidAlPlate),
             mAl, solidAlPlate->GetName());
-    new G4PVPlacement(0, G4ThreeVector(-1.5 * mm, 0, 0),
+    new G4PVPlacement(0, G4ThreeVector(-2.0 * mm, 0, 0),
             logicAlPlate, logicAlPlate->GetName(), logicWorld, false, 0, true);
     G4Region* regionAlPlate = new G4Region(logicAlPlate->GetName());
     regionAlPlate->AddRootLogicalVolume(logicAlPlate);

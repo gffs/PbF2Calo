@@ -6,7 +6,7 @@
         "particle": "e-",
         "energy": 3000,
         "momentum_direction": [1.0, 0.0, 0.0],
-        "particle_position": [0.0, 0.0, 0.0]
+        "particle_position": [-3.2, 0.0, 0.0]
     },
     "event": {
         "printModulo": 10
