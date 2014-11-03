@@ -8,7 +8,8 @@ import glob
 gROOT.SetBatch(1)
 
 gStyle.SetOptStat(0)
-gStyle.SetTitleOffset(1.4, "xyz")
+gStyle.SetTitleOffset(1.4, "xy")
+gStyle.SetTitleOffset(1.0, "z")
 gStyle.SetHistLineWidth(4)
 gStyle.SetStripDecimals(kFALSE)
 
@@ -40,23 +41,19 @@ class MCRun:
             pht_tree = mc_fl.Get("pht_org")
 
             eng_tree.Draw("eng_dep.pos_x >> h1(80, -10, 150)", 
-                "eng_dep.eng * (eng_dep.pos_x > 0 && eng_dep.pos_x < 140)",
-                "", int(1e7))
+                "eng_dep.eng * (eng_dep.pos_x > 0 && eng_dep.pos_x < 140)")
             self.h_eng_long.Add(gDirectory.Get("h1"))
 
             pht_tree.Draw("pht_dep.pos_x >> h2(80, -10, 150)", 
-                "pht_dep.pos_x > 0 && pht_dep.pos_x < 140",
-                "", int(1e7))
+                "pht_dep.pos_x > 0 && pht_dep.pos_x < 140")
             self.h_pht_long.Add(gDirectory.Get("h2"))
 
             eng_tree.Draw("sqrt(eng_dep.pos_y**2 + eng_dep.pos_z**2) >> h3(100, -10, 90)", 
-                "eng_dep.eng * (eng_dep.pos_x > 0 && eng_dep.pos_x < 140)",
-                "", int(2e7))
+                "eng_dep.eng * (eng_dep.pos_x > 0 && eng_dep.pos_x < 140)")
             self.h_eng_rad.Add(gDirectory.Get("h3"))
 
             pht_tree.Draw("sqrt(pht_dep.pos_y**2 + pht_dep.pos_z**2) >> h4(100, -10, 90)", 
-                "pht_dep.pos_x > 0 && pht_dep.pos_x < 140",
-                "", int(2e7))
+                "pht_dep.pos_x > 0 && pht_dep.pos_x < 140")
             self.h_pht_rad.Add(gDirectory.Get("h4"))
 
             mc_fl.Close()
@@ -80,7 +77,7 @@ class MCRun:
             mol_rad.append(mol_r)
 
         for i in range(len(mol_rad)):
-            print "Moliere radius in %s space: %f.2 mm" % (label[i], mol_rad[i])
+            print "Moliere radius in %s space: %.2f mm" % (label[i], mol_rad[i])
 
 if __name__ == '__main__':
     pos30 = MCRun('uw_3gev', 3.0)
@@ -110,23 +107,21 @@ if __name__ == '__main__':
     pos30.h_eng_rad.GetOption()
 
     pos30.h_pht_rad.Scale(1.0 / pos30.h_pht_rad.Integral())
-    pos30.h_pht_rad.SetTitle(";radial distance from [mm];")
+    pos30.h_pht_rad.SetTitle(";radial distance from beam [mm];")
     pos30.h_pht_rad.SetLineColor(c_red)
     pos30.h_pht_rad.SetMarkerColor(c_red)
     pos30.h_pht_rad.SetMarkerStyle(1)
     pos30.h_pht_rad.GetOption()
 
     c = TCanvas()
-    pos30.h_eng_long.Draw("h")
-    pos30.h_pht_long.Draw("h same")
+    pos30.h_pht_long.Draw("h")
+    pos30.h_eng_long.Draw("h same")
     c.Print('eng_pht_long.pdf', 'pdf')
 
     c2 = TCanvas()
     c2.SetLogy()
-    pos30.h_pht_rad.GetXaxis().SetRangeUser(-5, 40)
+    pos30.h_pht_rad.GetXaxis().SetRangeUser(-5, 35)
     pos30.h_pht_rad.Draw("h")
     pos30.h_eng_rad.Draw("h same")
     c2.Print('eng_pht_rad.pdf', 'pdf')
-
-    #Moliere radius (90% energy)
 

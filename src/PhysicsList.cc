@@ -2,7 +2,7 @@
 #include "G4DecayPhysics.hh"
 #include "G4EmPenelopePhysics.hh"
 #include "G4EmExtraPhysics.hh"
-#include "G4HadronElasticPhysics.hh"
+#include "G4HadronElasticPhysicsHP.hh"
 #include "G4HadronPhysicsQGSP_BIC_HP.hh"
 #include "G4IonPhysics.hh"
 #include "G4LossTableManager.hh"
@@ -20,8 +20,8 @@ PhysicsList::PhysicsList() :
     emPhysicsList(new G4EmPenelopePhysics),
     emExtraPhysicsList(new G4EmExtraPhysics),
     decayPhysicsList(new G4DecayPhysics),
-    hadronElasticPhysicsList(new G4HadronElasticPhysics),
     hadronPhysicsList(new G4HadronPhysicsQGSP_BIC_HP),
+    hadronElasticPhysicsList(new G4HadronElasticPhysicsHP),
     stoppingPhysicsList(new G4StoppingPhysics),
     ionPhysicsList(new G4IonPhysics),
     opticalPhysicsList(new OpticalPhysics)
@@ -43,8 +43,8 @@ PhysicsList::~PhysicsList()
     delete decayPhysicsList;
     delete emPhysicsList;
     delete emExtraPhysicsList;
-    delete hadronElasticPhysicsList;
     delete hadronPhysicsList;
+    delete hadronElasticPhysicsList;
     delete stoppingPhysicsList;
     delete ionPhysicsList;
     delete opticalPhysicsList;
@@ -66,8 +66,8 @@ void PhysicsList::ConstructProcess()
     decayPhysicsList->ConstructProcess();
     emPhysicsList->ConstructProcess();
     emExtraPhysicsList->ConstructProcess();
-    hadronElasticPhysicsList->ConstructProcess();
     hadronPhysicsList->ConstructProcess();
+    hadronElasticPhysicsList->ConstructProcess();
     stoppingPhysicsList->ConstructProcess();
     ionPhysicsList->ConstructProcess();
     opticalPhysicsList->ConstructProcess();

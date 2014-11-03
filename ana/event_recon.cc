@@ -32,7 +32,7 @@ int main(int argc, char** argv)
     std::map<std::string, float*> ev_buf = {
         {"PbF2", &ev.eng_calo},
         {"AlPlate", &ev.eng_AlPlate},
-        {"SiPlate", &ev.eng_SiPlate},
+        {"Nusil", &ev.eng_SiPlate},
         {"World", &ev.eng_lost},
         {"OutOfWo", &ev.eng_lost},
     };
