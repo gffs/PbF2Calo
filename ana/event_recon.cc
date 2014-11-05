@@ -27,6 +27,13 @@ int main(int argc, char** argv)
         float eng_lost;
     };
 
+    struct ph_recon {
+        long ev_num;
+        long num_ph;
+        long num_ph_3x3;
+        long num_ph_3x3_prompt;
+    };
+
     std::queue<eng_recon*> ev_q;
     eng_recon ev = {-1,0,0,0,0};
     std::map<std::string, float*> ev_buf = {
@@ -37,10 +44,20 @@ int main(int argc, char** argv)
         {"OutOfWo", &ev.eng_lost},
     };
 
+    std::queue<ph_recon*> ph_q;
+    ph_recon ph = {-1,0,0,0};
+
     TTreeReader ttr("eng", fl);
     TTreeReaderValue<float> eng(ttr, "eng_dep.eng");
     TTreeReaderArray<char> vol_nm(ttr, "eng_dep.vol_nm");
     TTreeReaderValue<unsigned int> ev_num(ttr, "eng_dep.ev_num");
+
+    TTreeReader ttrp("pht_org", fl);
+    TTreeReaderValue<unsigned int> ph_num(ttrp, "pht_dep.ev_num");
+    TTreeReaderValue<float> pos_x(ttrp, "pht_dep.pos_x");
+    TTreeReaderValue<float> pos_y(ttrp, "pht_dep.pos_y");
+    TTreeReaderValue<float> pos_z(ttrp, "pht_dep.pos_z");
+    TTreeReaderValue<float> time_g(ttrp, "pht_dep.time_g");
 
     if (!ttr.GetEntries(true)) {
         std::cout << "the eng tree is empty." << std::endl;
@@ -61,6 +78,27 @@ int main(int argc, char** argv)
     }
     ev_q.emplace(new eng_recon(ev));
 
+    ttrp.SetLocalEntry(0);
+    ph = {*ph_num, 0,0,0};
+    ttrp.SetLocalEntry(-1);
+
+    while(ttrp.Next()) {
+        if (*ph_num != ph.ev_num) {
+                ph_q.emplace(new ph_recon(ph));
+                ph = {*ph_num, 0,0,0};
+        }
+        if (*pos_x > 0 && *pos_x < 140) {
+            ph.num_ph++;
+            if (*pos_y < 37.5 && *pos_y > -37.5 && *pos_z < 37.5 && *pos_z > -37.5) {
+                ph.num_ph_3x3++;
+                if (*time_g < 5.0) {
+                    ph.num_ph_3x3_prompt++;
+                }
+            }
+        }
+    }
+    ph_q.emplace(new ph_recon(ph));
+
     fl->Close();
 
     TFile fl_dump("recon.root", "recreate");
@@ -74,7 +112,18 @@ int main(int argc, char** argv)
         recon_tree->Fill();
     }
 
+    TTree* ph_recon_tree = new TTree("ph_org", "ph_org");
+    ph_recon_tree->Branch("ph_org", &ph.ev_num,
+            "ev_num/L:num_ph:num_ph_3x3:num_ph_3x3_prompt", 1024*1024);
+
+    while (!ph_q.empty()) {
+        ph = *ph_q.front();
+        ph_q.pop();
+        ph_recon_tree->Fill();
+    }
+
     recon_tree->Write();
+    ph_recon_tree->Write();
     fl_dump.Close();
 
     return 0;
