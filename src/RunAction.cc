@@ -40,6 +40,7 @@ struct photon_deposit {
     unsigned int ev_num;
     char vol_nm[8];
     char par_nm[8];
+    char proc_nm[8];
 };
 
 struct secondaries_deposit {
@@ -133,7 +134,7 @@ void RunAction::BeginOfRunAction(const G4Run*)
     sec_tree->Reset();
 
     pht_tree = new TTree("pht_org", "pht_org");
-    pht_tree->Branch("pht_dep", &pht_dep->pos_x, "pos_x/F:pos_y:pos_z:time_g:mom_x:mom_y:mom_z:kin:ev_num/i:vol_nm[8]/C:par_nm[8]/C", 1024*1024);
+    pht_tree->Branch("pht_dep", &pht_dep->pos_x, "pos_x/F:pos_y:pos_z:time_g:mom_x:mom_y:mom_z:kin:ev_num/i:vol_nm[8]/C:par_nm[8]/C:proc_nm[8]/C", 1024*1024);
     pht_tree->Fill();
     pht_tree->Reset();
 
@@ -200,14 +201,15 @@ void RunAction::FillSecondariesDeposit(G4double eng, const G4ThreeVector& pos,
     strncpy(sd.par_nm, particleName.c_str(), 7);
     sd.par_nm[7] = '\0';
     strncpy(sd.proc_nm, procName.c_str(), 7);
-    sd.par_nm[7] = '\0';
+    sd.proc_nm[7] = '\0';
 
     sec_q->push(sd);
 }
 
 void RunAction::FillPhotonDeposit(const G4ThreeVector& pos, G4double gtime,
         const G4ThreeVector& mom, G4int evID, G4double kin,
-        const G4String& physVol, const G4String& particleName) const
+        const G4String& physVol, const G4String& particleName,
+        const G4String& procName) const
 {
     struct photon_deposit pd = {
         static_cast<float>(pos.x()),
@@ -219,13 +221,15 @@ void RunAction::FillPhotonDeposit(const G4ThreeVector& pos, G4double gtime,
         static_cast<float>(mom.z()),
         static_cast<float>(kin),
         static_cast<unsigned int>(evID),
-        {}, {}
+        {}, {}, {}
     };
 
     strncpy(pd.vol_nm, physVol.c_str(), 7);
     pd.vol_nm[7] = '\0';
     strncpy(pd.par_nm, particleName.c_str(), 7);
     pd.par_nm[7] = '\0';
+    strncpy(pd.proc_nm, procName.c_str(), 7);
+    pd.proc_nm[7] = '\0';
 
     pht_q->push(pd);
 }

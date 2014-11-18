@@ -41,6 +41,9 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
     }
 
     const std::vector<const G4Track*>* sec = aStep->GetSecondaryInCurrentStep();
+    auto proc_cr = aStep->GetTrack()->GetCreatorProcess();
+    G4String proc_nm("none");
+    if (proc_cr) { proc_nm = proc_cr->GetProcessName(); }
 
     for (auto aTrack: *sec) {
         if (aTrack->GetParticleDefinition()->GetParticleName() == "opticalphoton") { 
@@ -53,7 +56,8 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
             const G4String& particleName = aStep->GetTrack()->
                 GetParticleDefinition()->GetParticleName();
 
-            ra->FillPhotonDeposit(pos, gtime, mom, evID, kin, physVol->GetName(), particleName);
+            ra->FillPhotonDeposit(pos, gtime, mom, evID, kin, physVol->GetName(),
+                    particleName, proc_nm);
         }
     }
 }

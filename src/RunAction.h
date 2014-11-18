@@ -28,7 +28,8 @@ class RunAction : public G4UserRunAction
 
     void FillPhotonDeposit(const G4ThreeVector& pos, G4double gtime,
             const G4ThreeVector& mom, G4int evID, G4double kin,
-            const G4String& physVol, const G4String& particleName) const;
+            const G4String& physVol, const G4String& particleName,
+            const G4String& procName) const;
 
     void FillPhotonDetDeposit(const G4ThreeVector& pos, G4double gtime,
             const G4ThreeVector& mom, G4int evID, const G4ThreeVector& pos_org,
