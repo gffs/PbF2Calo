@@ -50,6 +50,7 @@ int main(int argc, char* argv[]) {
     G4VSteppingVerbose::SetInstance(new SteppingVerbose);
     
     G4MTRunManager* runManager = new G4MTRunManager;
+    runManager->SetNumberOfThreads(4);
 
     runManager->SetUserInitialization(new DetectorConstruction(conf["detector_construction"]));
     runManager->SetUserInitialization(PhysicsListBase::init(conf["physics_list"]));
