@@ -7,7 +7,8 @@ find_package(Geant4 REQUIRED ui_all)
 find_package(ROOT REQUIRED)
 
 include(${Geant4_USE_FILE})
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -arch x86_64 -std=c++1y -Wextra -Wno-shadow -g -O3")
+set(CMAKE_CXX11_STANDARD_COMPILE_OPTION)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -arch x86_64 -std=c++14 -Wextra -Wno-shadow -g -O3")
 
 include_directories(${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src)
 include_directories(${Geant4_INCLUDE_DIR})
@@ -42,4 +43,3 @@ foreach(_script ${PbF2Calo_SCRIPTS})
 endforeach()
 
 install(TARGETS PbF2Calo DESTINATION bin)
-

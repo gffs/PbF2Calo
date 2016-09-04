@@ -19,10 +19,10 @@ SteppingAction::~SteppingAction()
 }
 
 void SteppingAction::UserSteppingAction(const G4Step* aStep)
-{  
+{
     G4double edep = aStep->GetTotalEnergyDeposit();
 
-    if (edep > 0 && (aStep->GetTrack()->GetParticleDefinition() 
+    if (edep > 0 && (aStep->GetTrack()->GetParticleDefinition()
                 != G4OpticalPhoton::OpticalPhotonDefinition())) {
         G4StepPoint* endPoint = aStep->GetPostStepPoint();
         const G4ThreeVector pos = endPoint->GetPosition();
@@ -45,8 +45,9 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
     G4String proc_nm("none");
     if (proc_cr) { proc_nm = proc_cr->GetProcessName(); }
 
+/*
     for (auto aTrack: *sec) {
-        if (aTrack->GetParticleDefinition()->GetParticleName() == "opticalphoton") { 
+        if (aTrack->GetParticleDefinition()->GetParticleName() == "opticalphoton") {
             const G4ThreeVector pos = aTrack->GetPosition();
             const G4ThreeVector mom = aTrack->GetMomentum();
             G4double gtime = aTrack->GetGlobalTime();
@@ -60,5 +61,5 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
                     particleName, proc_nm);
         }
     }
+*/
 }
-

@@ -1,4 +1,5 @@
 #include "DetectorConstruction.h"
+#include "G4Box.hh"
 #include "G4GeometryManager.hh"
 #include "G4Material.hh"
 #include "G4NistManager.hh"
@@ -12,16 +13,14 @@
 #include "G4SolidStore.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
-#include "G4Usolid.hh"
-#include "UBox.hh"
-#include "UMultiUnion.hh"
+
+#include "G4MultiUnion.hh"
 
 #include <array>
 
 DetectorConstruction::DetectorConstruction(const json11::Json cfg):
     G4VUserDetectorConstruction(),
     crystalLength(140 * mm),
-    usolidStore(),
     cfg_(cfg)
 {
 }
@@ -30,7 +29,6 @@ DetectorConstruction::~DetectorConstruction()
 {
     delete physWorld;
     delete logicWorld;
-    usolidStore.clear();
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
@@ -86,63 +84,56 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
     const float caloHalfWidth = 500 * mm;
     //world has to be centered at origin
-    UBox* solidWorld = new UBox("World", crystalLength + 3*mm,
+    G4Box* solidWorld = new G4Box("World", crystalLength + 3*mm,
             caloHalfWidth, caloHalfWidth);
-    logicWorld = new G4LogicalVolume(
-            new G4USolid(solidWorld->GetName(), solidWorld),
+    logicWorld = new G4LogicalVolume(solidWorld,
             mAir, solidWorld->GetName());
     physWorld = new G4PVPlacement(0, //no rotation
             G4ThreeVector(0, 0, 0), //world has to be centered at origin
             logicWorld, logicWorld->GetName(), 0, false, 0, true);
 
-    UBox* solidAlPlate = new UBox("AlPlate", 2.0 * mm,
+    G4Box* solidAlPlate = new G4Box("AlPlate", 2.0 * mm,
             caloHalfWidth, caloHalfWidth);
-    G4LogicalVolume* logicAlPlate = new G4LogicalVolume(
-            new G4USolid(solidAlPlate->GetName(), solidAlPlate),
+    G4LogicalVolume* logicAlPlate = new G4LogicalVolume(solidAlPlate,
             mAl, solidAlPlate->GetName());
     new G4PVPlacement(0, G4ThreeVector(-2.0 * mm, 0, 0),
             logicAlPlate, logicAlPlate->GetName(), logicWorld, false, 0, true);
     G4Region* regionAlPlate = new G4Region(logicAlPlate->GetName());
     regionAlPlate->AddRootLogicalVolume(logicAlPlate);
 
-    UBox* solidSiPlate = new UBox("SiPlate", 1.5 * mm,
+    G4Box* solidSiPlate = new G4Box("SiPlate", 1.5 * mm,
             caloHalfWidth, caloHalfWidth);
-    G4LogicalVolume* logicSiPlate = new G4LogicalVolume(
-            new G4USolid(solidSiPlate->GetName(), solidSiPlate),
+    G4LogicalVolume* logicSiPlate = new G4LogicalVolume(solidSiPlate,
             mSi, solidSiPlate->GetName());
     new G4PVPlacement(0, G4ThreeVector(crystalLength + 1.5 * mm, 0, 0),
             logicSiPlate, logicSiPlate->GetName(), logicWorld, false, 0, true);
     G4Region* regionSiPlate = new G4Region(logicSiPlate->GetName());
     regionSiPlate->AddRootLogicalVolume(logicSiPlate);
 
-    UBox* solidNusil = new UBox("Nusil", 0.1 * mm,
+    G4Box* solidNusil = new G4Box("Nusil", 0.1 * mm,
             caloHalfWidth, caloHalfWidth);
-    G4LogicalVolume* logicNusil = new G4LogicalVolume(
-            new G4USolid(solidNusil->GetName(), solidNusil),
+    G4LogicalVolume* logicNusil = new G4LogicalVolume(solidNusil,
             mNusil, solidNusil->GetName());
     new G4PVPlacement(0, G4ThreeVector(-1.4 * mm, 0, 0),
             logicNusil, logicNusil->GetName(), logicSiPlate, false, 0, true);
 
-    UBox* solidEpoxy = new UBox("Epoxy", 0.225 * mm,
+    G4Box* solidEpoxy = new G4Box("Epoxy", 0.225 * mm,
             caloHalfWidth, caloHalfWidth);
-    G4LogicalVolume* logicEpoxy = new G4LogicalVolume(
-            new G4USolid(solidEpoxy->GetName(), solidEpoxy),
+    G4LogicalVolume* logicEpoxy = new G4LogicalVolume(solidEpoxy,
             mEpoxy, solidEpoxy->GetName());
     new G4PVPlacement(0, G4ThreeVector(-1.075 * mm, 0, 0),
             logicEpoxy, logicEpoxy->GetName(), logicSiPlate, false, 0, true);
 
-    UBox* solidSiActive = new UBox("SiActive", 0.075 * mm,
+    G4Box* solidSiActive = new G4Box("SiActive", 0.075 * mm,
             caloHalfWidth, caloHalfWidth);
-    G4LogicalVolume* logicSiActive = new G4LogicalVolume(
-            new G4USolid(solidSiActive->GetName(), solidSiActive),
+    G4LogicalVolume* logicSiActive = new G4LogicalVolume(solidSiActive,
             mSi, solidSiActive->GetName());
     new G4PVPlacement(0, G4ThreeVector(-0.775 * mm, 0, 0),
             logicSiActive, logicSiActive->GetName(), logicSiPlate, false, 0, true);
 
-    UBox* solidPbF2 = new UBox("PbF2", crystalLength / 2.0,
+    G4Box* solidPbF2 = new G4Box("PbF2", crystalLength / 2.0,
             caloHalfWidth, caloHalfWidth);
-    G4LogicalVolume* logicPbF2 = new G4LogicalVolume(
-            new G4USolid(solidPbF2->GetName(), solidPbF2),
+    G4LogicalVolume* logicPbF2 = new G4LogicalVolume(solidPbF2,
             mPbF2, solidPbF2->GetName());
     auto physicalPbF2 = new G4PVPlacement(0, G4ThreeVector(crystalLength / 2.0, 0, 0),
             logicPbF2, logicPbF2->GetName(), logicWorld, false, 0, true);
@@ -150,27 +141,25 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     regionPbF2->AddRootLogicalVolume(logicPbF2);
 
     if (cfg_["crystal_wrapping"]["is_present"].bool_value()) {
-        UBox& solidWrappingLayer = *new UBox("Wrapping", crystalLength / 2.0, 
+        G4Box& solidWrappingLayer = *new G4Box("Wrapping", crystalLength / 2.0,
                 caloHalfWidth, 0.050);
-        usolidStore.insert(&solidWrappingLayer);
-        UMultiUnion* solidWrapping = new UMultiUnion("Wrapping");
+        G4MultiUnion* solidWrapping = new G4MultiUnion("Wrapping");
 
         unsigned short num_layers = (int)((caloHalfWidth - 12.5) / 25.0);
         for (unsigned short i = 0; i < 2 * num_layers; i++) {
             float offset = (-num_layers + i - 0.5) * 25.0;
-            UTransform3D& aTv = *new UTransform3D(0,0,offset, 0,0,0);
+            G4Transform3D& aTv = *new HepGeom::Translate3D(0,0,offset);
             solidWrapping->AddNode(solidWrappingLayer, aTv);
 
             //angles in deg are euler in x convention: z, x, z
-            UTransform3D& aTh = *new UTransform3D(0,offset,0, 0,90,0);
+            G4Transform3D& aTh = *new G4Transform3D();
+            aTh = HepGeom::Translate3D(0,0,offset) * HepGeom::RotateY3D(90 * deg);
             solidWrapping->AddNode(solidWrappingLayer, aTh);
         }
 
         solidWrapping->Voxelize();
-        solidWrapping->Capacity();
 
-        G4LogicalVolume* logicWrapping = new G4LogicalVolume(
-                new G4USolid(solidWrapping->GetName(), solidWrapping),
+        G4LogicalVolume* logicWrapping = new G4LogicalVolume(solidWrapping,
                 mMylar, solidWrapping->GetName());
         auto physicalWrapping = new G4PVPlacement(0, G4ThreeVector(0, 0, 0),
                 logicWrapping, logicWrapping->GetName(), logicPbF2, false, 0, true);
@@ -199,7 +188,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
             "RINDEX", "SPECULARLOBECONSTANT", "SPECULARSPIKECONSTANT",
             "BACKSCATTERCONSTANT", "REFLECTIVITY", "TRANSMITTANCE",
             "EFFICIENCY", "REALRINDEX", "IMAGINARYRINDEX"
-        }}; 
+        }};
 
         G4MaterialPropertiesTable* ompt = new G4MaterialPropertiesTable();
         for (auto prop: opArray) {
@@ -223,4 +212,3 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
     return physWorld;
 }
-

@@ -9,7 +9,7 @@
 #include "RunAction.h"
 #include "TrackAction.h"
 
-TrackAction::TrackAction(): 
+TrackAction::TrackAction():
     G4UserTrackingAction(),
     G4UserStackingAction()
 {
@@ -37,6 +37,7 @@ void TrackAction::PreUserTrackingAction(const G4Track* aTrack)
 
 G4ClassificationOfNewTrack TrackAction::ClassifyNewTrack(const G4Track* aTrack)
 {
+    /*
     if ((aTrack->GetParticleDefinition() == G4Electron::Definition()
             || aTrack->GetParticleDefinition() == G4Positron::Definition())
             && aTrack->GetTrackID() > 1)
@@ -52,10 +53,10 @@ G4ClassificationOfNewTrack TrackAction::ClassifyNewTrack(const G4Track* aTrack)
         ra->FillSecondariesDeposit(kin, pos, gtime, evID, physVol,
                 particleName, procName);
     }
+    */
 
     G4ClassificationOfNewTrack classification = fUrgent;
     //if(aTrack->GetParentID() != 0) classification = fKill;
-  
+
     return classification;
 }
-
