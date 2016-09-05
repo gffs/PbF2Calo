@@ -11,6 +11,7 @@
 #include "G4PVPlacement.hh"
 #include "G4RotationMatrix.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4UnitsTable.hh"
 #include "G4VisAttributes.hh"
 #include "GeometryUtility.h"
 
