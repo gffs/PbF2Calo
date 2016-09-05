@@ -24,6 +24,9 @@
 },
 
 "detector_construction": {
+    "geometry": {
+        "Calorimeter": "Calorimeter"
+    },
     "crystal_wrapping": {
         "is_present": true,
         "material": "black"
@@ -63,7 +66,7 @@
             "EFFICIENCY": [ [100, 0.0], [100, 0.0] ]
         },
         "millipore": {
-        
+
         },
         "tedlar": {
 
@@ -137,4 +140,3 @@
 }
 
 }
-

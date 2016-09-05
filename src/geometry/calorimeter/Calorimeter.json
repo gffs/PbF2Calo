@@ -1,0 +1,8 @@
+{
+    "doc_type": "geometry_conf",
+
+    "class_name": "Calorimeter",
+    "parent_logical": "World",
+
+    "inner_clearance": 6.000
+}

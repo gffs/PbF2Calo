@@ -20,7 +20,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction
   private:
     G4VPhysicalVolume* physWorld;
     G4LogicalVolume* logicWorld;
-    G4double crystalLength;
 
     json11::Json cfg_;
 };
