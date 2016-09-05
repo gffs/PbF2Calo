@@ -35,7 +35,7 @@ void TrackAction::PreUserTrackingAction(const G4Track* aTrack)
     }
 }
 
-G4ClassificationOfNewTrack TrackAction::ClassifyNewTrack(const G4Track* aTrack)
+G4ClassificationOfNewTrack TrackAction::ClassifyNewTrack(const G4Track* /* aTrack */)
 {
     /*
     if ((aTrack->GetParticleDefinition() == G4Electron::Definition()
