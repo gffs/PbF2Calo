@@ -34,14 +34,14 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4NistManager* nistManager = G4NistManager::Instance();
 
     G4Material* mAir = nistManager->FindOrBuildMaterial("G4_AIR");
-    G4Material* mAl = nistManager->FindOrBuildMaterial("G4_Al");
+    /* G4Material* mAl = */ nistManager->FindOrBuildMaterial("G4_Al");
     G4Material* mC = nistManager->FindOrBuildMaterial("G4_C");
     G4Material* mF = nistManager->FindOrBuildMaterial("G4_F");
     G4Material* mH = nistManager->FindOrBuildMaterial("G4_H");
     G4Material* mO = nistManager->FindOrBuildMaterial("G4_O");
     G4Material* mPb = nistManager->FindOrBuildMaterial("G4_Pb");
     G4Material* mSi = nistManager->FindOrBuildMaterial("G4_Si");
-    G4Material* mMylar = nistManager->FindOrBuildMaterial("G4_MYLAR");
+    /* G4Material* mMylar = */ nistManager->FindOrBuildMaterial("G4_MYLAR");
 
     G4Material* mNusil = new G4Material("Nusil", 1.02*g/cm3, 2);
     mNusil->AddMaterial(mC, 0.799);
@@ -55,8 +55,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     mPbF2->AddMaterial(mPb, 0.84504);
     mPbF2->AddMaterial(mF, 0.15496);
 
-
-/*
     const G4MaterialTable* theMaterialTable = G4Material::GetMaterialTable();
     for (auto mat: *theMaterialTable) {
         auto mat_cfg = cfg_["material_properties"][mat->GetName()];
@@ -75,7 +73,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
         }
         mat->SetMaterialPropertiesTable(mpt);
     }
-*/
 
     G4GeometryManager::GetInstance()->OpenGeometry();
     G4PhysicalVolumeStore::GetInstance()->Clean();

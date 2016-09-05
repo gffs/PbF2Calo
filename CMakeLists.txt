@@ -39,20 +39,11 @@ target_link_libraries(PbF2Calo ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
 add_subdirectory(ana)
 
 file(GLOB_RECURSE confs ${PROJECT_SOURCE_DIR}/src/ *.json)
-file(COPY ${confs} DESTINATION ${PROJECT_BINARY_DIR}/conf)
 
 set(macs
     run.mac
-    uw.json
-    artg4.json
 )
 
-foreach(_script ${macs})
-  configure_file(
-    ${PROJECT_SOURCE_DIR}/${_script}
-    ${PROJECT_BINARY_DIR}/${_script}
-    COPYONLY
-    )
-endforeach()
-
 install(TARGETS PbF2Calo DESTINATION bin)
+install(FILES ${confs} DESTINATION conf)
+install(FILES ${macs} DESTINATION .)

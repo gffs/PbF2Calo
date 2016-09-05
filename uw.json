@@ -17,9 +17,9 @@
     "name": "uw",
     "production_cuts": {
         "DefaultRegionForTheWorld": [ 1000, 10, 10, 1000 ],
-        "AlPlate": [ 3000, 55, 55, 3000 ],
-        "PbF2": [ 900, 27, 28, 0 ],
-        "SiPlate": [ 3000, 65, 65, 3000 ]
+        "CalorimeterFrontPlate": [ 3000, 55, 55, 3000 ],
+        "CalorimeterCrystalArray": [ 900, 27, 28, 0 ],
+        "CalorimeterSipmPlate": [ 3000, 65, 65, 3000 ]
     }
 },
 
@@ -27,33 +27,13 @@
     "geometry": {
         "Calorimeter": "Calorimeter"
     },
+
     "crystal_wrapping": {
         "is_present": true,
         "material": "black"
     },
+
     "optical_properties": {
-        "white_polished": {
-            "finish": "polishedbackpainted",
-            "sigma_alpha": 0.085,
-            "RINDEX": [ [100, 1.4], [1000, 1.4] ],
-            "SPECULARSPIKECONSTANT": [ [100, 0.0], [1000, 0.0] ],
-            "SPECULARLOBECONSTANT": [ [100, 1.0], [1000, 1.0] ],
-            "BACKSCATTERCONSTANT": [ [100, 0.0], [1000, 0.0] ],
-            "REFLECTIVITY": [ [100, 1.0], [1000, 1.0] ],
-            "TRANSMITTANCE": [ [100, 0.0], [100, 0.0] ],
-            "EFFICIENCY": [ [100, 0.0], [100, 0.0] ]
-        },
-        "white_ground": {
-            "finish": "groundbackpainted",
-            "sigma_alpha": 0.085,
-            "RINDEX": [ [100, 1.4], [1000, 1.4] ],
-            "SPECULARSPIKECONSTANT": [ [100, 0.0], [1000, 0.0] ],
-            "SPECULARLOBECONSTANT": [ [100, 1.0], [1000, 1.0] ],
-            "BACKSCATTERCONSTANT": [ [100, 0.0], [1000, 0.0] ],
-            "REFLECTIVITY": [ [100, 1.0], [1000, 1.0] ],
-            "TRANSMITTANCE": [ [100, 0.0], [100, 0.0] ],
-            "EFFICIENCY": [ [100, 0.0], [100, 0.0] ]
-        },
         "black": {
             "finish": "groundbackpainted",
             "sigma_alpha": 0.085,
@@ -65,13 +45,11 @@
             "TRANSMITTANCE": [ [100, 0.0], [100, 0.0] ],
             "EFFICIENCY": [ [100, 0.0], [100, 0.0] ]
         },
-        "millipore": {
-
-        },
         "tedlar": {
 
         }
     },
+
     "material_properties": {
         "G4_AIR": {
             "RINDEX": [ [100, 1.000001], [2000, 1.000001] ],
