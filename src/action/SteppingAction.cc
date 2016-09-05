@@ -40,7 +40,7 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
         }
     }
 
-    const std::vector<const G4Track*>* sec = aStep->GetSecondaryInCurrentStep();
+    //const std::vector<const G4Track*>* sec = aStep->GetSecondaryInCurrentStep();
     auto proc_cr = aStep->GetTrack()->GetCreatorProcess();
     G4String proc_nm("none");
     if (proc_cr) { proc_nm = proc_cr->GetProcessName(); }

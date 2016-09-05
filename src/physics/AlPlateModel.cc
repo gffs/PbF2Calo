@@ -6,10 +6,9 @@
 
 std::mutex AlPlate_mutex;
 
-AlPlateModel::AlPlateModel(const G4String& name,
-        G4Region* const regionAlPlate):
-    G4VFastSimulationModel(name, regionAlPlate),
-    regionAlPlate_(regionAlPlate)
+AlPlateModel::AlPlateModel(const G4String& name, G4Region* const regionAlPlate):
+    G4VFastSimulationModel(name, regionAlPlate)
+    //regionAlPlate_(regionAlPlate)
 {}
 
 G4bool AlPlateModel::IsApplicable(const G4ParticleDefinition& aParticle)
@@ -36,4 +35,3 @@ void AlPlateModel::DoIt(const G4FastTrack& aTrack, G4FastStep& aStep)
     aStep.ProposeTotalEnergyDeposited(
             aTrack.GetPrimaryTrack()->GetKineticEnergy());
 }
-

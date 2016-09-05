@@ -18,6 +18,5 @@ class AlPlateModel: public G4VFastSimulationModel
     virtual void DoIt(const G4FastTrack& aTrack, G4FastStep& aStep);
 
   private:
-    G4Region* const regionAlPlate_;
+    //G4Region* const regionAlPlate_;
 };
-
