@@ -14,10 +14,10 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(const json11::Json& cfg):
     fParticleGun->SetParticleDefinition(G4ParticleTable::GetParticleTable()->
         FindParticle(cfg_["particle"].string_value()));
 
-    fParticleGun->SetParticleEnergy(cfg_["energy"].number_value() * MeV);    
+    fParticleGun->SetParticleEnergy(cfg_["energy"].number_value() * MeV);
 
     fParticleGun->SetParticleMomentumDirection(
-            json11::Init<G4ThreeVector>(cfg_["momentum_direction"]));
+            json11::Init<G4ThreeVector>::with(cfg_["momentum_direction"]));
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
@@ -28,8 +28,7 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
     fParticleGun->SetParticlePosition(
-            json11::Init<G4ThreeVector>(cfg_["particle_position"]));
+            json11::Init<G4ThreeVector>::with(cfg_["particle_position"]));
 
     fParticleGun->GeneratePrimaryVertex(anEvent);
 }
-
