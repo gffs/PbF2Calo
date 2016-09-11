@@ -5,15 +5,14 @@
 
 class RunAction;
 
-class SteppingAction : public G4UserSteppingAction
+class EnergyDepositSteppingAction : public G4UserSteppingAction
 {
   public:
-    SteppingAction();
-    ~SteppingAction();
+    EnergyDepositSteppingAction();
+    ~EnergyDepositSteppingAction();
 
     virtual void UserSteppingAction(const G4Step*);
 
   private:
-    const RunAction* ra;
+    RunAction* ra;
 };
-

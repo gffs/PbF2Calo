@@ -10,6 +10,11 @@
     },
     "event": {
         "printModulo": 10
+    },
+    "products": {
+        "EnergyDepositWriter": "EnergyDepositWriter",
+        "PhotonOriginWriter": "PhotonOriginWriter",
+        "PhotonDetector": "PhotonDetector"
     }
 },
 

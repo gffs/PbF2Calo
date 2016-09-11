@@ -1,4 +1,8 @@
+#include "EnergyDepositWriter.h"
 #include "GdmlWriter.h"
+#include "MuonTrackSniffer.h"
+#include "PhotonDetector.h"
+#include "PhotonOriginWriter.h"
 #include "ProductBase.h"
 
 #include "cassert"
@@ -7,7 +11,11 @@
 #include "sstream"
 
 std::unordered_map<std::string, ProductBase*(*)(const json11::Json&, TFile&)> ProductBase::product_map = {
-    {"GDMLWriter", &ProductBase::create<GdmlWriter>}
+    {"GDMLWriter", &ProductBase::create<GdmlWriter>},
+    {"MuonTrackSniffer", &ProductBase::create<MuonTrackSniffer>},
+    {"EnergyDepositWriter", &ProductBase::create<EnergyDepositWriter>},
+    {"PhotonOriginWriter", &ProductBase::create<PhotonOriginWriter>},
+    {"PhotonDetector", &ProductBase::create<PhotonDetector>}
 };
 
 ProductBase::ProductBase(const json11::Json& cfg):

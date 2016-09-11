@@ -17,7 +17,7 @@
 #ifdef G4UI_USE
 #include "G4UIExecutive.hh"
 #endif
- 
+
 int main(int argc, char* argv[]) {
     if (argc < 2) {
         std::cout << "usage: " << argv[0] <<
@@ -48,20 +48,20 @@ int main(int argc, char* argv[]) {
 
     //my Verbose output class
     G4VSteppingVerbose::SetInstance(new SteppingVerbose);
-    
+
     G4MTRunManager* runManager = new G4MTRunManager;
-    runManager->SetNumberOfThreads(4);
+    runManager->SetNumberOfThreads(2);
 
     runManager->SetUserInitialization(new DetectorConstruction(conf["detector_construction"]));
     runManager->SetUserInitialization(PhysicsListBase::init(conf["physics_list"]));
     runManager->SetUserInitialization(new ActionInitialization(conf["action"]));
- 
+
   // Start execution
   if (argc > 2) {        // execute an argument macro file if exist
     G4String command = "/control/execute ";
     G4String fileName = argv[2];
     G4UImanager::GetUIpointer()->ApplyCommand(command+fileName);
-    
+
   } else {                // start interactive session
       G4UIExecutive * ui = new G4UIExecutive(argc, argv);
       ui->SessionStart();
@@ -72,4 +72,3 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
-

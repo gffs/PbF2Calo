@@ -21,7 +21,11 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/src/geometry/calorimeter
     ${PROJECT_SOURCE_DIR}/src/physics
     ${PROJECT_SOURCE_DIR}/src/product
+    ${PROJECT_SOURCE_DIR}/src/product/energy_deposit_writer
     ${PROJECT_SOURCE_DIR}/src/product/gdml_writer
+    ${PROJECT_SOURCE_DIR}/src/product/photon_detector
+    ${PROJECT_SOURCE_DIR}/src/product/photon_origin_writer
+    ${PROJECT_SOURCE_DIR}/src/product/muon_track_sniffer
     ${PROJECT_SOURCE_DIR}/src/utility
     ${Geant4_INCLUDE_DIR}
     ${ROOT_INCLUDE_DIR}

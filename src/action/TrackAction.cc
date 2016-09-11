@@ -37,23 +37,6 @@ void TrackAction::PreUserTrackingAction(const G4Track* aTrack)
 
 G4ClassificationOfNewTrack TrackAction::ClassifyNewTrack(const G4Track* /* aTrack */)
 {
-    /*
-    if ((aTrack->GetParticleDefinition() == G4Electron::Definition()
-            || aTrack->GetParticleDefinition() == G4Positron::Definition())
-            && aTrack->GetTrackID() > 1)
-    {
-        G4double kin = aTrack->GetKineticEnergy();
-        const G4ThreeVector pos = aTrack->GetPosition();
-        G4double gtime = aTrack->GetGlobalTime();
-        G4int evID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
-        auto particleName = aTrack->GetParticleDefinition()->GetParticleName();
-        auto physVol = aTrack->GetVolume()->GetName();
-        auto procName = aTrack->GetCreatorProcess()->GetProcessName();
-
-        ra->FillSecondariesDeposit(kin, pos, gtime, evID, physVol,
-                particleName, procName);
-    }
-    */
 
     G4ClassificationOfNewTrack classification = fUrgent;
     //if(aTrack->GetParentID() != 0) classification = fKill;

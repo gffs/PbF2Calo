@@ -2,6 +2,7 @@
 #include "G4RunManager.hh"
 #include "G4ThreeVector.hh"
 #include "G4UserRunAction.hh"
+#include "PhotonDetector.h"
 #include "PhotonTrackInformation.h"
 #include "RunAction.h"
 #include "SiPlateModel.h"
@@ -14,9 +15,8 @@ SiPlateModel::SiPlateModel(const G4String& name,
         G4Region* const regionSiPlate):
     G4VFastSimulationModel(name, regionSiPlate)
 {
-    const G4UserRunAction* const ura =
-        G4RunManager::GetRunManager()->GetUserRunAction();
-    ra_ = dynamic_cast<const RunAction*>(ura);
+    const G4UserRunAction* const ura = G4RunManager::GetRunManager()->GetUserRunAction();
+    ra = const_cast<RunAction*>(dynamic_cast<const RunAction*>(ura));
 }
 
 G4bool SiPlateModel::IsApplicable(const G4ParticleDefinition&)
@@ -28,13 +28,13 @@ G4bool SiPlateModel::ModelTrigger(const G4FastTrack& aFastTrack)
 {
     const G4Track* t = aFastTrack.GetPrimaryTrack();
     if (t->GetParticleDefinition() == G4OpticalPhoton::OpticalPhotonDefinition()) {
-        if (t->GetVolume()->GetName() == "SiPlate" &&
+        if (t->GetVolume()->GetName() == "CalorimeterSiPMActive" &&
                 t->GetStep()->GetPreStepPoint()->GetStepStatus() == fGeomBoundary) {
             return true;
         }
         else { return false; }
     }
-    
+
     return true;
 }
 
@@ -71,9 +71,9 @@ void SiPlateModel::DoIt(const G4FastTrack& aTrack, G4FastStep& aStep)
         auto idx_org = std::floor((pos_org[i] - 12.5) / 25);
         if (isOK && idx != idx_org) {isOK = false; }
     }
-    if (!isOK) { return; }
 
-    ra_->FillPhotonDetDeposit(pos, gtime, mom, evID,
-            pos_org, pti->mom_org, pti->num_bounces);
+    //if (!isOK) { return; }
+
+    const PhotonDetector& pd = dynamic_cast<const PhotonDetector&>((*ra)["PhotonDetector"]);
+    pd.Fill(pos, gtime, mom, evID, pos_org, pti->mom_org, pti->num_bounces);
 }
-
