@@ -24,6 +24,7 @@ int main(int argc, char** argv)
         float eng_calo;
         float eng_AlPlate;
         float eng_SiPlate;
+        float eng_Wrapping;
         float eng_lost;
     };
 
@@ -35,11 +36,12 @@ int main(int argc, char** argv)
     };
 
     std::queue<eng_recon*> ev_q;
-    eng_recon ev = {-1,0,0,0,0};
+    eng_recon ev = {-1,0,0,0,0,0};
     std::map<std::string, float*> ev_buf = {
-        {"PbF2", &ev.eng_calo},
-        {"AlPlate", &ev.eng_AlPlate},
-        {"Nusil", &ev.eng_SiPlate},
+        {"CaloCrystalArra", &ev.eng_calo},
+        {"CaloFrontPlate", &ev.eng_AlPlate},
+        {"CaloGreaseNusil", &ev.eng_SiPlate},
+        {"Wrapping", &ev.eng_Wrapping},
         {"World", &ev.eng_lost},
         {"OutOfWo", &ev.eng_lost},
     };
@@ -47,17 +49,19 @@ int main(int argc, char** argv)
     std::queue<ph_recon*> ph_q;
     ph_recon ph = {-1,0,0,0};
 
-    TTreeReader ttr("eng", fl);
-    TTreeReaderValue<float> eng(ttr, "eng_dep.eng");
-    TTreeReaderArray<char> vol_nm(ttr, "eng_dep.vol_nm");
-    TTreeReaderValue<unsigned int> ev_num(ttr, "eng_dep.ev_num");
+    TTreeReader ttr("energy_deposit", fl);
+    TTreeReaderValue<float> eng(ttr, "energy_deposit.eng");
+    TTreeReaderArray<char> vol_nm(ttr, "energy_deposit.vol_nm");
+    TTreeReaderValue<unsigned int> ev_num(ttr, "energy_deposit.ev_num");
 
-    TTreeReader ttrp("pht_org", fl);
-    TTreeReaderValue<unsigned int> ph_num(ttrp, "pht_dep.ev_num");
-    TTreeReaderValue<float> pos_x(ttrp, "pht_dep.pos_x");
-    TTreeReaderValue<float> pos_y(ttrp, "pht_dep.pos_y");
-    TTreeReaderValue<float> pos_z(ttrp, "pht_dep.pos_z");
-    TTreeReaderValue<float> time_g(ttrp, "pht_dep.time_g");
+    TTreeReader ttrp("photon_detector", fl);
+    TTreeReaderValue<unsigned int> ph_num(ttrp, "photon_detector.ev_num");
+    TTreeReaderValue<float> pos_x(ttrp, "photon_detector.pos_x");
+    TTreeReaderValue<float> pos_y(ttrp, "photon_detector.pos_y");
+    TTreeReaderValue<float> pos_z(ttrp, "photon_detector.pos_z");
+    TTreeReaderValue<float> time_g(ttrp, "photon_detector.time_g");
+
+    std::cout << "energy tree entries: " << ttr.GetEntries(false) << std::endl;
 
     if (!ttr.GetEntries(true)) {
         std::cout << "the eng tree is empty." << std::endl;
@@ -66,21 +70,27 @@ int main(int argc, char** argv)
     }
 
     ttr.SetLocalEntry(0);
-    ev = {*ev_num, 0,0,0,0};
-    ttr.SetLocalEntry(-1);
-
+    ev = {*ev_num, 0,0,0,0,0};
+    ttr.SetLocalEntry(0);
+    
     while(ttr.Next()) {
         if (*ev_num != ev.ev_num) {
                 ev_q.emplace(new eng_recon(ev));
-                ev = {*ev_num, 0,0,0,0};
+                ev = {*ev_num, 0,0,0,0,0};
         }
         *ev_buf.at(&vol_nm[0]) += *eng;
     }
     ev_q.emplace(new eng_recon(ev));
 
+    if (!ttrp.GetEntries(true)) {
+        std::cout << "the photon tree is empty." << std::endl;
+        fl->Close();
+        return -1;
+    }
+
     ttrp.SetLocalEntry(0);
     ph = {*ph_num, 0,0,0};
-    ttrp.SetLocalEntry(-1);
+    ttrp.SetLocalEntry(0);
 
     while(ttrp.Next()) {
         if (*ph_num != ph.ev_num) {
@@ -128,4 +138,3 @@ int main(int argc, char** argv)
 
     return 0;
 }
-

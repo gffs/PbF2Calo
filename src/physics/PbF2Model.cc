@@ -22,14 +22,14 @@ G4bool PbF2Model::ModelTrigger(const G4FastTrack& aFastTrack)
 {
     const G4Track* t = aFastTrack.GetPrimaryTrack();
     if (t->GetParticleDefinition() == G4OpticalPhoton::OpticalPhotonDefinition()
-        && t->GetVolume()->GetName() == "PbF2"
+        && t->GetVolume()->GetName() == "CaloCrystalArray"
         && t->GetStep()->GetPreStepPoint()->GetStepStatus() == fGeomBoundary) {
-                    
+
         PhotonTrackInformation* pti =
             static_cast<PhotonTrackInformation*>(t->GetUserInformation());
         pti->num_bounces++;
     }
-    
+
     return false;
 }
 
@@ -37,4 +37,3 @@ void PbF2Model::DoIt(const G4FastTrack&, G4FastStep&)
 {
     std::unique_lock<std::mutex> PbF2_lock(PbF2_mutex);
 }
-

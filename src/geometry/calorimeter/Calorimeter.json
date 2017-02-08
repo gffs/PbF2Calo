@@ -4,5 +4,27 @@
     "class_name": "Calorimeter",
     "parent_logical": "World",
 
-    "inner_clearance": 6.000
+    "inner_clearance": 6.000,
+
+    "crystal_wrapping": {
+        "is_present": true,
+        "material": "black"
+    },
+
+    "optical_properties": {
+        "black": {
+            "finish": "groundbackpainted",
+            "sigma_alpha": 0.085,
+            "RINDEX": [ [100, 1.4], [1000, 1.4] ],
+            "SPECULARSPIKECONSTANT": [ [100, 0.0], [1000, 0.0] ],
+            "SPECULARLOBECONSTANT": [ [100, 1.0], [1000, 1.0] ],
+            "BACKSCATTERCONSTANT": [ [100, 0.0], [1000, 0.0] ],
+            "REFLECTIVITY": [ [100, 0.0], [1000, 0.0] ],
+            "TRANSMITTANCE": [ [100, 0.0], [100, 0.0] ],
+            "EFFICIENCY": [ [100, 0.0], [100, 0.0] ]
+        },
+        "tedlar": {
+
+        }
+    }
 }

@@ -46,11 +46,13 @@ json11::Json PhysicsListBase::cfg_ = json11::Json();
 void PhysicsListBase::AddParametrisation()
 {
     G4RegionStore* rs = G4RegionStore::GetInstance();
-    new AlPlateModel("AlPlate", rs->GetRegion("CalorimeterFrontPlate"));
-    new SiPlateModel("SiPlate", rs->GetRegion("CalorimeterSipmPlate"));
-    new PbF2Model("PbF2", rs->GetRegion("CalorimeterCrystalArray"));
+    new AlPlateModel("AlPlate", rs->GetRegion("CaloFrontPlate"));
+    new SiPlateModel("SiPlate", rs->GetRegion("CaloSipmPlate"));
+    new PbF2Model("PbF2", rs->GetRegion("CaloCrystalArray"));
 
     G4FastSimulationManagerProcess* fsmp = new G4FastSimulationManagerProcess();
+
+    auto theParticleIterator = GetParticleIterator();
     theParticleIterator->reset();
     while((*theParticleIterator)()) {
         G4ParticleDefinition* particle = theParticleIterator->value();

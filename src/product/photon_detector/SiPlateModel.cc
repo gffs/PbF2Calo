@@ -28,7 +28,7 @@ G4bool SiPlateModel::ModelTrigger(const G4FastTrack& aFastTrack)
 {
     const G4Track* t = aFastTrack.GetPrimaryTrack();
     if (t->GetParticleDefinition() == G4OpticalPhoton::OpticalPhotonDefinition()) {
-        if (t->GetVolume()->GetName() == "CalorimeterSiPMActive" &&
+        if (t->GetVolume()->GetName() == "CaloSiPMActive" &&
                 t->GetStep()->GetPreStepPoint()->GetStepStatus() == fGeomBoundary) {
             return true;
         }

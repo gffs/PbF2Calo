@@ -81,7 +81,7 @@ void Calorimeter::FrontPlate()
 {
     //Aluminum plate from 2015, for now
     G4Box& frontPlateSV = *new G4Box(
-        "CalorimeterFrontPlate",
+        "CaloFrontPlate",
         2.0 * mm,
         500 * mm, 500 * mm
     );
@@ -109,7 +109,7 @@ void Calorimeter::FrontPlate()
 void Calorimeter::SipmPlate()
 {
     G4Box& sipmPlateSV = *new G4Box(
-        "CalorimeterSipmPlate",
+        "CaloSipmPlate",
         1.5 * mm,
         500 * mm, 500 * mm
     );
@@ -134,7 +134,7 @@ void Calorimeter::SipmPlate()
 
     //grease between crystal and SiPM
     G4Box& nusilSV = *new G4Box(
-        "CalorimeterGreaseNusil",
+        "CaloGreaseNusil",
         0.1 * mm,
         500 * mm, 500 * mm
     );
@@ -150,7 +150,7 @@ void Calorimeter::SipmPlate()
 
     //SiPM epoxy window
     G4Box& epoxySV = *new G4Box(
-        "CalorimeterEpoxyWindow",
+        "CaloEpoxyWindow",
         0.225 * mm,
         500 * mm, 500 * mm
     );
@@ -166,7 +166,7 @@ void Calorimeter::SipmPlate()
 
     //Active Si region of SiPM
     G4Box& siActiveSV = *new G4Box(
-        "CalorimeterSiPMActive",
+        "CaloSiPMActive",
         0.075 * mm,
         500 * mm, 500 * mm
     );
@@ -186,7 +186,7 @@ void Calorimeter::SipmPlate()
 void Calorimeter::CrystalArray()
 {
     G4Box& crystalArraySV = *new G4Box(
-        "CalorimeterCrystalArray",
+        "CaloCrystalArray",
         140.0 / 2.0 * mm,
         500 * mm, 500 * mm
     );
@@ -209,29 +209,34 @@ void Calorimeter::CrystalArray()
     regionPbF2->AddRootLogicalVolume(crystalArrayLV);
 
 
-    //if (cfg_["crystal_wrapping"]["is_present"].bool_value()) {
-    if (false) {
+    if (cfg_["crystal_wrapping"]["is_present"].bool_value()) {
+    //if (false) {
         double crystalLength = 140 * mm;
         double caloHalfWidth = 500 * mm;
-        G4Box& solidWrappingLayer = *new G4Box("Wrapping", crystalLength / 2.0,
+        G4Box& solidWrappingLayerH = *new G4Box("Wrapping_h", crystalLength / 2.0,
                 caloHalfWidth, 0.050);
+        G4Box& solidWrappingLayerV = *new G4Box("Wrapping_v", crystalLength / 2.0,
+                0.050, caloHalfWidth);
         G4MultiUnion* solidWrapping = new G4MultiUnion("Wrapping");
 
         unsigned short num_layers = (int)((caloHalfWidth - 12.5) / 25.0);
         for (unsigned short i = 0; i < 2 * num_layers; i++) {
             float offset = (-num_layers + i - 0.5) * 25.0;
             G4Transform3D& aTv = *new HepGeom::Translate3D(0,0,offset);
-            solidWrapping->AddNode(solidWrappingLayer, aTv);
+            solidWrapping->AddNode(solidWrappingLayerH, aTv);
 
             //angles in deg are euler in x convention: z, x, z
+            //G4Transform3D& aTh = *new G4Transform3D();
+            //aTh = HepGeom::Translate3D(0,0,offset) * HepGeom::RotateY3D(90 * deg);
+            //solidWrapping->AddNode(solidWrappingLayer, aTh);
             G4Transform3D& aTh = *new G4Transform3D();
-            aTh = HepGeom::Translate3D(0,0,offset) * HepGeom::RotateY3D(90 * deg);
-            solidWrapping->AddNode(solidWrappingLayer, aTh);
+            aTh = HepGeom::Translate3D(0,offset,0);
+            solidWrapping->AddNode(solidWrappingLayerV, aTh);
         }
 
         solidWrapping->Voxelize();
 
-        G4Material* mMylar = G4NistManager::Instance()->FindOrBuildMaterial("Mylar");
+        G4Material* mMylar = G4NistManager::Instance()->FindOrBuildMaterial("G4_MYLAR");
         G4LogicalVolume* logicWrapping = new G4LogicalVolume(
             solidWrapping, mMylar, solidWrapping->GetName()
         );
@@ -257,6 +262,7 @@ void Calorimeter::CrystalArray()
             {"groundbackpainted", groundbackpainted}
         };
 
+/*
         osWrapping->SetFinish(static_cast<G4OpticalSurfaceFinish>
                 (opFinish[opProp["finish"].string_value()]));
         osWrapping->SetSigmaAlpha(opProp["sigma_alpha"].number_value());
@@ -266,6 +272,7 @@ void Calorimeter::CrystalArray()
             "BACKSCATTERCONSTANT", "REFLECTIVITY", "TRANSMITTANCE",
             "EFFICIENCY", "REALRINDEX", "IMAGINARYRINDEX"
         }};
+
 
         G4MaterialPropertiesTable* ompt = new G4MaterialPropertiesTable();
         for (auto prop: opArray) {
@@ -281,9 +288,12 @@ void Calorimeter::CrystalArray()
                 ompt->AddEntry(key, eng, val);
             }
         }
+
         //ompt->DumpTable();
         osWrapping->SetMaterialPropertiesTable(ompt);
 
         new G4LogicalBorderSurface("WrappingOpSurface", crystalArrayPV, physicalWrapping, osWrapping);
+*/
     }
+
 }

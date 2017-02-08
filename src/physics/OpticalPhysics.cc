@@ -29,6 +29,7 @@ void OpticalPhysics::ConstructProcess()
     G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();
     G4Cerenkov* cerenkov = new G4Cerenkov();
 
+    auto aParticleIterator = GetParticleIterator();
     aParticleIterator->reset();
 
     while ((*aParticleIterator)()) {
@@ -45,5 +46,3 @@ void OpticalPhysics::ConstructProcess()
     //opBo->SetVerboseLevel(2);
     pm->AddDiscreteProcess(opBo);
 }
-
-

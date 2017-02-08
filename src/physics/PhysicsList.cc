@@ -1,5 +1,6 @@
 #include "G4DataQuestionaire.hh"
 #include "G4DecayPhysics.hh"
+#include "G4EmParameters.hh"
 #include "G4EmPenelopePhysics.hh"
 #include "G4EmExtraPhysics.hh"
 #include "G4HadronElasticPhysicsHP.hh"
@@ -8,7 +9,6 @@
 #include "G4LossTableManager.hh"
 #include "G4OpticalProcessIndex.hh"
 #include "G4ProcessManager.hh"
-#include "G4EmProcessOptions.hh"
 #include "G4StoppingPhysics.hh"
 #include "G4String.hh"
 #include "G4VAtomDeexcitation.hh"
@@ -72,23 +72,23 @@ void PhysicsList::ConstructProcess()
     ionPhysicsList->ConstructProcess();
     opticalPhysicsList->ConstructProcess();
 
-    G4EmProcessOptions opt;
+    G4EmParameters& opt = *(G4EmParameters::Instance());
     opt.SetVerbose(1);
 
-    //Penelope EM Physics  
+    //Penelope EM Physics
     //opt.SetMscStepLimitation(fUseDistanceToBoundary);
     //opt.SetMscRangeFactor(0.02);
-    
-    opt.SetMinEnergy(100*eV);
-    opt.SetMaxEnergy(10*TeV);
-    opt.SetDEDXBinning(320); //default: 220
-    opt.SetLambdaBinning(320); //default: 220
+
+    opt.SetMinEnergy(100 * CLHEP::eV);
+    opt.SetMaxEnergy(10 * CLHEP::TeV);
+    //opt.SetDEDXBinning(320); //default: 220
+    //opt.SetLambdaBinning(320); //default: 220
 
     //opt.SetSplineFlag(true); //default: true
-    opt.SetPolarAngleLimit(CLHEP::pi);
-    
+    //opt.SetPolarAngleLimit(CLHEP::pi);
+
     // Ionization
-    //opt.SetSubCutoff(true);    
+    //opt.SetSubCutoff(true);
 
     opt.SetApplyCuts(true);
 
@@ -97,4 +97,3 @@ void PhysicsList::ConstructProcess()
     deex = G4LossTableManager::Instance()->AtomDeexcitation();
     deex->SetFluo(false); //penelope default: true
 }
-

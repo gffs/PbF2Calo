@@ -2,6 +2,7 @@
 #include "DetectorConstruction.h"
 #include "G4MTRunManager.hh"
 #include "G4UImanager.hh"
+#include "G4VisExecutive.hh"
 #include "json11.hpp"
 #include "PhysicsListBase.h"
 #include "Randomize.hh"
@@ -40,7 +41,8 @@ int main(int argc, char* argv[]) {
     ROOT::GetROOT();
     TThread::Initialize();
 
-    CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine);
+    //CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine);
+    CLHEP::HepRandom::setTheEngine(new CLHEP::HepJamesRandom);
     long seeds[2];
     seeds[0] = (long) time(NULL);
     seeds[1] = (long) (seeds[0] * G4UniformRand());
@@ -63,6 +65,8 @@ int main(int argc, char* argv[]) {
     G4UImanager::GetUIpointer()->ApplyCommand(command+fileName);
 
   } else {                // start interactive session
+      auto visManager = new G4VisExecutive;
+      visManager->Initialize();
       G4UIExecutive * ui = new G4UIExecutive(argc, argv);
       ui->SessionStart();
       delete ui;

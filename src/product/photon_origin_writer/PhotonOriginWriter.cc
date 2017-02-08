@@ -25,7 +25,7 @@ PhotonOriginWriter::PhotonOriginWriter(const json11::Json& cfg, TFile& root_file
     photon_origin_tree->Fill();
     photon_origin_tree->Reset();
 
-    G4Region* rs = G4RegionStore::GetInstance()->GetRegion("CalorimeterCrystalArray");
+    G4Region* rs = G4RegionStore::GetInstance()->GetRegion("CaloCrystalArray");
     if (!rs) { return; }
 
     rs->SetRegionalSteppingAction(new PhotonOriginSteppingAction);

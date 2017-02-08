@@ -22,37 +22,15 @@
     "name": "uw",
     "production_cuts": {
         "DefaultRegionForTheWorld": [ 1000, 10, 10, 1000 ],
-        "CalorimeterFrontPlate": [ 3000, 55, 55, 3000 ],
-        "CalorimeterCrystalArray": [ 900, 27, 28, 0 ],
-        "CalorimeterSipmPlate": [ 3000, 65, 65, 3000 ]
+        "CaloFrontPlate": [ 3000, 55, 55, 3000 ],
+        "CaloCrystalArray": [ 900, 27, 28, 0 ],
+        "CaloSipmPlate": [ 3000, 65, 65, 3000 ]
     }
 },
 
 "detector_construction": {
     "geometry": {
         "Calorimeter": "Calorimeter"
-    },
-
-    "crystal_wrapping": {
-        "is_present": true,
-        "material": "black"
-    },
-
-    "optical_properties": {
-        "black": {
-            "finish": "groundbackpainted",
-            "sigma_alpha": 0.085,
-            "RINDEX": [ [100, 1.4], [1000, 1.4] ],
-            "SPECULARSPIKECONSTANT": [ [100, 0.0], [1000, 0.0] ],
-            "SPECULARLOBECONSTANT": [ [100, 1.0], [1000, 1.0] ],
-            "BACKSCATTERCONSTANT": [ [100, 0.0], [1000, 0.0] ],
-            "REFLECTIVITY": [ [100, 0.0], [1000, 0.0] ],
-            "TRANSMITTANCE": [ [100, 0.0], [100, 0.0] ],
-            "EFFICIENCY": [ [100, 0.0], [100, 0.0] ]
-        },
-        "tedlar": {
-
-        }
     },
 
     "material_properties": {

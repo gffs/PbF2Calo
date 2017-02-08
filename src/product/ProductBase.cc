@@ -1,3 +1,4 @@
+//#include "EnergyDepositHisto.h"
 #include "EnergyDepositWriter.h"
 #include "GdmlWriter.h"
 #include "MuonTrackSniffer.h"
@@ -13,9 +14,10 @@
 std::unordered_map<std::string, ProductBase*(*)(const json11::Json&, TFile&)> ProductBase::product_map = {
     {"GDMLWriter", &ProductBase::create<GdmlWriter>},
     {"MuonTrackSniffer", &ProductBase::create<MuonTrackSniffer>},
+//    {"EnergyDepositHisto", &ProductBase::create<EnergyDepositHisto>},
     {"EnergyDepositWriter", &ProductBase::create<EnergyDepositWriter>},
-    {"PhotonOriginWriter", &ProductBase::create<PhotonOriginWriter>},
-    {"PhotonDetector", &ProductBase::create<PhotonDetector>}
+    {"PhotonDetector", &ProductBase::create<PhotonDetector>},
+    {"PhotonOriginWriter", &ProductBase::create<PhotonOriginWriter>}
 };
 
 ProductBase::ProductBase(const json11::Json& cfg):
